@@ -74,8 +74,6 @@ z-index:100;transition:transform 0.2s}
 .su{background:#fef2f2;color:#dc2626}
 .sw{background:#fffbeb;color:#d97706}
 .so{background:#ecfdf5;color:#059669}
-.idz{border:2px dashed #e2e8f0;border-radius:18px;padding:36px 20px;text-align:center;margin:14px 0;background:#f8fafc}
-.idz.dg{border-color:#10b981;background:#ecfdf5}
 .fg{margin-bottom:14px}
 .fl{font-size:12px;font-weight:600;color:#64748b;margin-bottom:6px;display:block}
 .fi{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:14px;font-size:16px;background:#f8fafc;-webkit-appearance:none}
@@ -157,7 +155,7 @@ body{-ms-overflow-style:none;scrollbar-width:none}
 <div id="s-tx" class="sec" style="display:none">
 <div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Операции</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
 <div class="card"><button class="btn" onclick="app.showTxModal()">+ Транзакция</button><button class="btn btg" style="margin-top:8px" onclick="app.showTransferModal()">
-↔️ Перевод</button><button class="btn btg" style="margin-top:8px" onclick="app.nav('import')">📥 Импорт CSV</button></div>
+↔️ Перевод</button></div>
 <div class="sch"><input class="fi" id="tsx" placeholder="🔍 Поиск по операциям..." oninput="app.rtx()"></div>
 <div style="margin:10px 18px;display:flex;gap:10px">
 <select id="tm" class="fi" style="flex:1;font-size:14px" onchange="app.rtx()"></select>
@@ -184,12 +182,35 @@ body{-ms-overflow-style:none;scrollbar-width:none}
 </div>
 <div id="s-analytics" class="sec" style="display:none">
 <div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Аналитика</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
-<div class="srow"><div class="scard"><div class="si">📊</div><div class="sl">Дневной средний</div><div class="sv" id="ad">
-0 ₽</div></div><div class="scard"><div class="si">🔮</div><div class="sl">Прогноз</div><div class="sv" id="ap">0 ₽</div></div>
+<div class="card" style="text-align:center;padding:24px;background:linear-gradient(135deg,#10b981,#059669);color:#fff">
+<div style="font-size:13px;opacity:0.8;margin-bottom:8px">🏥 Финансовое здоровье</div>
+<div style="font-size:56px;font-weight:800" id="ahs">—</div>
+<div style="font-size:13px;opacity:0.8;margin-top:4px" id="aht">Начните вести учёт</div>
+<div style="height:6px;background:rgba(255,255,255,0.2);border-radius:3px;margin-top:12px;overflow:hidden">
+<div id="ahp" style="height:100%;background:#fff;border-radius:3px;transition:width 0.8s;width:0%"></div></div>
 </div>
+<div class="srow">
+<div class="scard"><div class="si" style="color:#10b981">💰</div><div class="sl">Коэф. сбережений</div><div class="sv" id="asr">—</div></div>
+<div class="scard"><div class="si" style="color:#3b82f6">🛡️</div><div class="sl">Фонд безопасности</div><div class="sv" id="aef">—</div></div>
+</div>
+<div class="card"><div class="ct">📊 Структура расходов (50/30/10/10)</div>
+<div style="display:flex;height:32px;border-radius:10px;overflow:hidden;margin:14px 0">
+<div id="b50" style="background:#10b981;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:width 0.5s">Нужды</div>
+<div id="b30" style="background:#3b82f6;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:width 0.5s">Хотелки</div>
+<div id="b10s" style="background:#f59e0b;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:width 0.5s">Сбер.</div>
+<div id="b10i" style="background:#8b5cf6;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:width 0.5s">Инв.</div>
+</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:#64748b">
+<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:#10b981"></div><span id="l50">Нужды —</span></div>
+<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:#3b82f6"></div><span id="l30">Хотелки —</span></div>
+<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:#f59e0b"></div><span id="l10s">Сбережения —</span></div>
+<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:#8b5cf6"></div><span id="l10i">Инвестиции —</span></div>
+</div></div>
 <div class="card"><div class="ct">📈 По месяцам</div><div class="cw"><canvas id="cm"></canvas></div></div>
+<div class="card"><div class="ct">📅 По дням недели</div><div class="cw"><canvas id="cwd"></canvas></div></div>
 <div class="card"><div class="ct">🥧 По категориям</div><div class="cw"><canvas id="cp"></canvas></div></div>
-<div class="card"><div class="ct">💡 Советы</div><div id="il"></div></div>
+<div class="card"><div class="ct">📊 Динамика категорий</div><div id="tcl"></div></div>
+<div class="card"><div class="ct">💡 Персональные инсайты</div><div id="il"></div></div>
 </div>
 <div id="s-capital" class="sec" style="display:none">
 <div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Капитал</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
@@ -208,21 +229,10 @@ body{-ms-overflow-style:none;scrollbar-width:none}
 <div style="padding:16px"><button class="btn" onclick="app.showGoalModal()">+ Новая цель</button></div>
 <div id="gll"></div>
 </div>
-<div id="s-import" class="sec" style="display:none">
-<div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Импорт CSV</div></div><button class="sbtn" onclick="app.nav('tx')">✕</button></div>
-<div class="card"><p style="font-size:14px;color:#64748b;margin-bottom:14px;line-height:1.5">Загрузите CSV-файл выписки из банка.</p>
-<div class="idz" id="dz" onclick="document.getElementById('fIn').click()"><div style="font-size:44px;margin-bottom:10px">
-📁</div><p style="font-size:15px;font-weight:700;margin-bottom:4px">Нажмите чтобы выбрать файл</p><p style="font-size:13px;color:#64748b">
-Сбер, Тинькофф, ВТБ, Альфа</p><input type="file" id="fIn" accept=".csv,.txt" style="display:none" onchange="app.handleFile(this)">
-</div></div>
-<div id="ip" style="display:none"><div class="card"><div class="ct">👀 Предпросмотр</div><div id="it" style="overflow-x:auto;font-size:12px;margin:10px 0">
-</div><div style="display:flex;gap:10px;margin-top:10px"><select id="iac" class="fi" style="flex:1"></select><button class="btn bts" onclick="app.importData()">
-✅ Импортировать</button></div></div></div>
-</div>
 <div id="s-settings" class="sec" style="display:none">
 <div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Настройки</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
 <div class="card" style="text-align:center;padding:24px"><div style="font-size:52px;margin-bottom:6px">💰</div><div style="font-size:22px;font-weight:800">
-FinTrack</div><div style="font-size:13px;color:#64748b;margin-top:4px">v3.1</div></div>
+FinTrack</div><div style="font-size:13px;color:#64748b;margin-top:4px">v3.2</div></div>
 <div class="card"><div class="ct">💾 Данные</div><div style="font-size:14px;color:#64748b;margin-bottom:14px">Все данные хранятся локально на вашем устройстве.</div>
 <button class="btn btg" style="margin-bottom:8px" onclick="app.exportData()">📤 Экспорт JSON</button><label class="btn btg" style="display:block;text-align:center;cursor:pointer">
 📥 Импорт JSON<input type="file" id="ij" accept=".json" style="display:none" onchange="app.importJsonData(this)"></label></div>
@@ -326,7 +336,7 @@ function initD(){
 }
 
 const app={
-  pg:'dash',ch:{},ib:[],
+  pg:'dash',ch:{},
   f(n){return Math.round(n).toLocaleString('ru-RU')+' ₽'},
   td(){return new Date().toISOString().split('T')[0]},
   uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2)},
@@ -344,7 +354,7 @@ const app={
   nav(p){
     this.pg=p;
     var secs=['dash','accounts','tx','budget','deposits','planned',
-    'analytics','capital','import','settings','goals'];
+    'analytics','capital','settings','goals'];
     secs.forEach(function(s){
       var el=document.getElementById('s-'+s);
       if(el)el.style.display='none';
@@ -387,7 +397,7 @@ const app={
     document.getElementById('db').textContent=this.f(tb);
     document.getElementById('da').textContent=
     a.length+' счетов · '+ic.length+' в учёте';
-    var mx=x.filter(function(z){return z.d.slice(0,7)===m});
+    var mx=x.filter(function(z){return z.d&&z.d.slice(0,7)===m});
     var ex=mx.filter(function(z){return z.t==='e'})
     .reduce(function(s,z){return s+z.am},0);
     var inc=mx.filter(function(z){return z.t==='i'})
@@ -521,11 +531,11 @@ const app={
         ms.push(d.toISOString().slice(0,7));
       }
       var ed=ms.map(function(m){
-        return x.filter(function(z){return z.t==='e'&&z.d.slice(0,7)===m})
+        return x.filter(function(z){return z.t==='e'&&z.d&&z.d.slice(0,7)===m})
         .reduce(function(s,z){return s+z.am},0);
       });
       var id=ms.map(function(m){
-        return x.filter(function(z){return z.t==='i'&&z.d.slice(0,7)===m})
+        return x.filter(function(z){return z.t==='i'&&z.d&&z.d.slice(0,7)===m})
         .reduce(function(s,z){return s+z.am},0);
       });
       if(this.ch.m6)this.ch.m6.destroy();
@@ -549,7 +559,7 @@ const app={
             x:{grid:{display:false}}
           }
         }
-      });
+      );
     }catch(e){console.log('Chart error:',e)}
   },
 
@@ -946,7 +956,7 @@ const app={
     var c=this.ct('e'),x=DB.get('x')||[];
     var m=this.td().slice(0,7);
     var sb={};
-    x.filter(function(z){return z.t==='e'&&z.d.slice(0,7)===m})
+    x.filter(function(z){return z.t==='e'&&z.d&&z.d.slice(0,7)===m})
     .forEach(function(z){sb[z.cid]=(sb[z.cid]||0)+z.am});
     var tb=c.reduce(function(s,z){return s+(+z.b||0)},0);
     var ts=c.reduce(function(s,z){return s+(sb[z.id]||0)},0);
@@ -1201,9 +1211,9 @@ const app={
       ms.push(dd.toISOString().slice(0,7));
     }
     var cap=ms.map(function(m){
-      var ex=x.filter(function(z){return z.t==='e'&&z.d.slice(0,7)<=m})
+      var ex=x.filter(function(z){return z.t==='e'&&z.d&&z.d.slice(0,7)<=m})
       .reduce(function(s,z){return s+z.am},0);
-      var inc=x.filter(function(z){return z.t==='i'&&z.d.slice(0,7)<=m})
+      var inc=x.filter(function(z){return z.t==='i'&&z.d&&z.d.slice(0,7)<=m})
       .reduce(function(s,z){return s+z.am},0);
       return Math.max(0,inc-ex+a.reduce(function(s,z){return s+(+z.b||0)},0));
     });
@@ -1322,7 +1332,6 @@ const app={
       app.f(q.b||0)+')</option>';
     }).join('')+'</select></div>';
     h+=`<button class="btn" onclick="app.doAddGoal('${id}')">💰 Пополнить</button>`;
-
     this.md('Пополнить цель: '+z.i+' '+z.n,h);
   },
 
@@ -1348,38 +1357,136 @@ const app={
   },
 
   ra(){
-    var x=DB.get('x')||[];
+    var x=DB.get('x')||[],a=DB.get('a')||[],c=DB.get('c')||[],d=DB.get('d')||[];
     var m=this.td().slice(0,7);
-    var mx=x.filter(function(z){return z.d.slice(0,7)===m&&z.t==='e'});
-    var te=mx.reduce(function(s,z){return s+z.am},0);
-    var dn=new Date().getDate();
-    var dl=te/dn;
-    var dm=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate();
-    document.getElementById('ad').textContent=this.f(dl);
-    document.getElementById('ap').textContent=this.f(dl*dm);
+    var mx=x.filter(function(z){return z.d&&z.d.slice(0,7)===m});
+    var mxe=mx.filter(function(z){return z.t==='e'});
+    var mxi=mx.filter(function(z){return z.t==='i'});
+    var te=mxe.reduce(function(s,z){return s+z.am},0);
+    var ti=mxi.reduce(function(s,z){return s+z.am},0);
+    var pm=new Date();pm.setMonth(pm.getMonth()-1);
+    var ps=pm.toISOString().slice(0,7);
+    var pxe=x.filter(function(z){return z.d&&z.d.slice(0,7)===ps&&z.t==='e'});
+    var pte=pxe.reduce(function(s,z){return s+z.am},0);
+    var pxi=x.filter(function(z){return z.d&&z.d.slice(0,7)===ps&&z.t==='i'});
+    var pti=pxi.reduce(function(s,z){return s+z.am},0);
+
+    var score=0;var reasons=[];
+    var sr=ti>0?Math.round((ti-te)/ti*100):0;
+    if(sr>=20){score+=35;reasons.push('Отличная норма сбережений')}
+    else if(sr>=10){score+=20;reasons.push('Хорошая норма сбережений')}
+    else if(sr>0){score+=10;reasons.push('Низкая норма сбережений')}
+    else{reasons.push('Расходы превышают доходы')}
+    var liqAcc=a.filter(function(z){return!z.ex}).reduce(function(s,z){return s+(+z.b||0)},0);
+    var avgExp=pte>0?pte:(te>0?te:0);
+    var months=avgExp>0?Math.round(liqAcc/avgExp*10)/10:0;
+    if(months>=6){score+=30;reasons.push('Отличная ликвидность')}
+    else if(months>=3){score+=20;reasons.push('Хорошая ликвидность')}
+    else if(months>=1){score+=10;reasons.push('Низкая ликвидность')}
+    else{reasons.push('Нет резерва ликвидности')}
+    var catCount=Object.keys(mxe.reduce(function(o,z){o[z.cid]=1;return o},{})).length;
+    if(catCount>=8){score+=20;reasons.push('Хорошая диверсификация расходов')}
+    else if(catCount>=4){score+=12;reasons.push('Умеренная диверсификация')}
+    else if(catCount>=1){score+=5;reasons.push('Мало категорий расходов')}
+    if(pte>0){
+      var cg=((te-pte)/pte*100).toFixed(0);
+      if(cg<=-10){score+=15;reasons.push('Расходы снижаются')}
+      else if(cg<=0){score+=10;reasons.push('Расходы стабильны')}
+      else if(cg<=15){score+=5;reasons.push('Расходы растут умеренно')}
+      else{reasons.push('Расходы растут быстро')}
+    }else{score+=10;reasons.push('Нет данных за прошлый месяц')}
+    score=Math.min(100,Math.max(0,score));
+    var scLabel=score>=80?'Отличное':score>=60?'Хорошее':score>=40?'Среднее':score>=20?'Требует внимания':'Критическое';
+    var scColor=score>=80?'#10b981':score>=60?'#3b82f6':score>=40?'#f59e0b':score>=20?'#f97316':'#ef4444';
+    document.getElementById('ahs').textContent=score;
+    document.getElementById('ahs').style.color=scColor;
+    document.getElementById('aht').textContent=scLabel;
+    document.getElementById('ahp').style.width=score+'%';
+    document.getElementById('asr').textContent=(sr>=0?sr:0)+'%';
+    document.getElementById('asr').style.color=sr>=20?'#10b981':sr>=10?'#3b82f6':'#ef4444';
+    document.getElementById('aef').textContent=months+' мес.';
+    document.getElementById('aef').style.color=months>=6?'#10b981':months>=3?'#3b82f6':months>=1?'#f59e0b':'#ef4444';
+    var needIds=[1,2,8,9,10,6,20,16,17];
+    var wantIds=[3,5,7,13,18,12,14,15,19];
+    var investIds=[103];
+    var needs=mxe.filter(function(z){return needIds.indexOf(+z.cid)>=0}).reduce(function(s,z){return s+z.am},0);
+    var wants=mxe.filter(function(z){return wantIds.indexOf(+z.cid)>=0}).reduce(function(s,z){return s+z.am},0);
+    var savings=mxi.reduce(function(s,z){return s+z.am},0)*0.1;
+    var invests=mxe.filter(function(z){return investIds.indexOf(+z.cid)>=0}).reduce(function(s,z){return s+z.am},0);
+    var total50=needs+wants+savings+invests;
+    if(total50>0){
+      var p50=Math.round(needs/total50*100);
+      var p30=Math.round(wants/total50*100);
+      var p10s=Math.round(savings/total50*100);
+      var p10i=100-p50-p30-p10s;
+      document.getElementById('b50').style.width=p50+'%';
+      document.getElementById('b50').textContent=p50>=12?p50+'%':'';
+      document.getElementById('b30').style.width=p30+'%';
+      document.getElementById('b30').textContent=p30>=12?p30+'%':'';
+      document.getElementById('b10s').style.width=p10s+'%';
+      document.getElementById('b10s').textContent=p10s>=12?p10s+'%':'';
+      document.getElementById('b10i').style.width=p10i+'%';
+      document.getElementById('b10i').textContent=p10i>=12?p10i+'%':'';
+      document.getElementById('l50').textContent='Нужды '+app.f(needs)+' ('+p50+'%)';
+      document.getElementById('l30').textContent='Хотелки '+app.f(wants)+' ('+p30+'%)';
+      document.getElementById('l10s').textContent='Сбережения '+app.f(savings)+' ('+p10s+'%)';
+      document.getElementById('l10i').textContent='Инвестиции '+app.f(invests)+' ('+p10i+'%)';
+    }else{
+      document.getElementById('b50').style.width='25%';
+      document.getElementById('b30').style.width='25%';
+      document.getElementById('b10s').style.width='25%';
+      document.getElementById('b10i').style.width='25%';
+      document.getElementById('l50').textContent='Нужды —';
+      document.getElementById('l30').textContent='Хотелки —';
+      document.getElementById('l10s').textContent='Сбережения —';
+      document.getElementById('l10i').textContent='Инвестиции —';
+    }
     var ms=[];
     for(var i=5;i>=0;i--){
-      var d=new Date();d.setMonth(d.getMonth()-i);
-      ms.push(d.toISOString().slice(0,7));
+      var dd=new Date();dd.setMonth(dd.getMonth()-i);
+      ms.push(dd.toISOString().slice(0,7));
     }
-    var me=ms.map(function(m){
-      return x.filter(function(z){return z.t==='e'&&z.d.slice(0,7)===m})
+    var me=ms.map(function(mm){
+      return x.filter(function(z){return z.t==='e'&&z.d&&z.d.slice(0,7)===mm})
+      .reduce(function(s,z){return s+z.am},0);
+    });
+    var mi=ms.map(function(mm){
+      return x.filter(function(z){return z.t==='i'&&z.d&&z.d.slice(0,7)===mm})
       .reduce(function(s,z){return s+z.am},0);
     });
     try{
       if(this.ch.mh)this.ch.mh.destroy();
-      var lbs=ms.map(function(m){var p=m.split('-');return p[1]+'.'+p[0].slice(2)});
+      var lbs=ms.map(function(mm){var p=mm.split('-');return p[1]+'.'+p[0].slice(2)});
       this.ch.mh=new Chart(document.getElementById('cm'),{
         type:'bar',
-        data:{labels:lbs,datasets:[{label:'Расходы',data:me,backgroundColor:'#ef4444',borderRadius:6}]},
+        data:{labels:lbs,datasets:[
+          {label:'Расходы',data:me,backgroundColor:'#ef4444',borderRadius:6},
+          {label:'Доходы',data:mi,backgroundColor:'#10b981',borderRadius:6}
+        ]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{boxWidth:12,font:{size:11}}}},scales:{y:{beginAtZero:true,grid:{display:false}},x:{grid:{display:false}}}}
+      );
+    }catch(e){}
+    var dowNames=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+    var dow=[0,0,0,0,0,0,0];
+    mxe.forEach(function(z){
+      if(z.d){
+        var day=new Date(z.d+'T12:00:00').getDay();
+        var idx=day===0?6:day-1;
+        dow[idx]+=z.am;
+      }
+    });
+    try{
+      if(this.ch.cwd)this.ch.cwd.destroy();
+      this.ch.cwd=new Chart(document.getElementById('cwd'),{
+        type:'bar',
+        data:{labels:dowNames,datasets:[{label:'Расходы',data:dow,backgroundColor:['#3b82f6','#3b82f6','#3b82f6','#3b82f6','#3b82f6','#f59e0b','#ef4444'],borderRadius:6}]},
         options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{display:false}},x:{grid:{display:false}}}}
       );
     }catch(e){}
-    var c=DB.get('c')||[];
     var bc={};
-    mx.forEach(function(z){bc[z.cid]=(bc[z.cid]||0)+z.am});
+    mxe.forEach(function(z){bc[z.cid]=(bc[z.cid]||0)+z.am});
     var pl=[],pd=[],pc=[];
-    Object.keys(bc).sort(function(a,b){return bc[b]-bc[a]}).slice(0,8)
+    Object.keys(bc).sort(function(aa,bb){return bc[bb]-bc[aa]}).slice(0,8)
     .forEach(function(cid){
       var z=c.find(function(q){return q.id===+cid});
       pl.push(z?z.n:'Другое');pd.push(bc[cid]);pc.push(z?z.c:'#999');
@@ -1392,97 +1499,54 @@ const app={
         options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:14,font:{size:11},padding:10}}},cutout:'68%'}
       );
     }catch(e){}
-    var pm=new Date();pm.setMonth(pm.getMonth()-1);
-    var ps=pm.toISOString().slice(0,7);
-    var pe=x.filter(function(z){return z.t==='e'&&z.d.slice(0,7)===ps})
-    .reduce(function(s,z){return s+z.am},0);
-    var ins=[];
-    if(pe>0){
-      var cg=((te-pe)/pe*100).toFixed(0);
-      ins.push({i:cg>20?'⚠️':'📊',t:cg>20?'Расходы выросли':'Динамика расходов',
-      x:cg>20?'На '+cg+'% больше прошлого месяца':cg<0?'На '+Math.abs(cg)+'% меньше прошлого месяца':'На том же уровне'});
+    var pbc={};
+    pxe.forEach(function(z){pbc[z.cid]=(pbc[z.cid]||0)+z.am});
+    var dyn=[];
+    Object.keys(bc).forEach(function(cid){
+      var cur=bc[cid]||0,prev=pbc[cid]||0;
+      var z=c.find(function(q){return q.id===+cid});
+      if(prev>0){
+        var chg=((cur-prev)/prev*100).toFixed(0);
+        dyn.push({n:z?z.n:'Другое',i:z?z.i:'',c:z?z.c:'#999',chg:+chg,cur:cur});
+      }else if(cur>0){
+        dyn.push({n:z?z.n:'Другое',i:z?z.i:'',c:z?z.c:'#999',chg:100,cur:cur});
+      }
+    });
+    dyn.sort(function(a,b){return Math.abs(b.chg)-Math.abs(a.chg)});
+    if(dyn.length){
+      document.getElementById('tcl').innerHTML=dyn.slice(0,6).map(function(z){
+        var isUp=z.chg>0;
+        return '<div class="txi"><div style="font-size:20px">'+z.i+'</div>'+
+        '<div class="ln"><div class="lt">'+z.n+'</div>'+
+        '<div class="ls">'+app.f(z.cur)+' в этом месяце</div></div>'+
+        '<div class="txa" style="color:'+(isUp?'#ef4444':'#10b981')+'">'+
+        (isUp?'📈 +':'📉 ')+z.chg+'%</div></div>';
+      }).join('');
+    }else{
+      document.getElementById('tcl').innerHTML='<div class="em" style="padding:16px"><div class="ei">📊</div><div class="et">Недостаточно данных</div><div class="es">Нужны данные за 2 месяца</div></div>';
     }
-    ins.push({i:'📊',t:'Прогноз на месяц',
-    x:'При текущем темпе к концу месяца: '+this.f(dl*dm)});
-    ins.push({i:'💡',t:'Совет',
-    x:'Правило 50/30/20: 50% на нужды, 30% на хотелки, 20% на сбережения'});
+    var ins=[];
+    if(sr>=20) ins.push({i:'🌟',t:'Супер! Вы сохраняете '+sr+'% доходов',x:'Рекомендуемая норма 20%+. Вы на правильном пути к финансовой свободе.'});
+    else if(sr>0) ins.push({i:'💡',t:'Сбережения: '+sr+'%',x:'Цель: 20% от доходов. Попробуйте найти 1-2 категории для сокращения.'});
+    else ins.push({i:'⚠️',t:'Расходы превышают доходы',x:'Важно сократить необязательные траты или найти дополнительный доход.'});
+    if(months>=6) ins.push({i:'🛡️',t:'Финансовая подушка надёжна',x:'У вас '+months+' мес. расходов в резерве. Цель: 3-6 месяцев. Отлично!'});
+    else if(months>=3) ins.push({i:'🛡️',t:'Финансовая подушка в порядке',x:'У вас '+months+' мес. расходов в резерве. Старайтесь накопить 6 месяцев.'});
+    else if(months>0) ins.push({i:'⚡',t:'Финансовая подушка требует внимания',x:'У вас '+months+' мес. расходов. Цель: минимум 3-6 месяцев на случай непредвиденных ситуаций.'});
+    else ins.push({i:'⚡',t:'Нет финансовой подушки',x:'Начните откладывать хотя бы 10% дохода каждый месяц.'});
+    var wdTotal=dow[0]+dow[1]+dow[2]+dow[3]+dow[4];
+    var weTotal=dow[5]+dow[6];
+    if(weTotal>wdTotal*0.7) ins.push({i:'🎯',t:'Больше тратите на выходных',x:'Выходные составляют '+Math.round(weTotal/(wdTotal+weTotal)*100)+'% расходов. Попробуйте планировать развлечения заранее.'});
+    if(pte>0){
+      var tcg=((te-pte)/pte*100).toFixed(0);
+      if(tcg>15) ins.push({i:'📈',t:'Расходы выросли на '+tcg+'%',x:'Сравните категории ниже, чтобы найти причину роста.'});
+      else if(tcg<-10) ins.push({i:'📉',t:'Расходы снизились на '+Math.abs(tcg)+'%',x:'Отличная динамика! Продолжайте в том же духе.'});
+    }
+    var topCat=dyn.length>0?dyn.sort(function(a,b){return b.cur-a.cur})[0]:null;
+    if(topCat) ins.push({i:topCat.i,t:'Крупнейшая статья: '+topCat.n,x:app.f(topCat.cur)+' ('+Math.round(topCat.cur/te*100)+'% от всех расходов)'});
     document.getElementById('il').innerHTML=ins.map(function(z){
       return '<div class="ig"><div class="ii">'+z.i+'</div>'+
       '<div><div class="it">'+z.t+'</div><div class="ix">'+z.x+'</div></div></div>';
     }).join('');
-  },
-
-  handleFile(inp){
-    var f=inp.files[0];if(!f)return;
-    var r=new FileReader();
-    r.onload=function(e){app.parseCSV(e.target.result)};
-    r.readAsText(f,'UTF-8');
-  },
-
-  parseCSV(txt){
-    var ls=txt.trim().split('\n');if(ls.length<2){alert('Файл пустой');return}
-    var dl=ls[0].includes(';')?';':',';
-    var hs=ls[0].split(dl).map(function(h){return h.trim().replace(/^[\\\"']|[\\\"']$/g,'')});
-    var hl=hs.map(function(h){return h.toLowerCase()});
-    var fn=function(kw){
-      var i=hl.findIndex(function(h){return kw.some(function(k){return h.includes(k)})});
-      return i>=0?hs[i]:null
-    };
-    var dc=fn(['date','дата','дата операции']);
-    var ac=fn(['amount','сумма','value']);
-    var sc=fn(['description','описание','назначение','комментарий','details']);
-    if(!dc||!ac){alert('Не удалось определить колонки');return}
-    this.ib=[];
-    for(var i=1;i<ls.length;i++){
-      var vs=ls[i].split(dl).map(function(v){return v.trim().replace(/^[\\\"']|[\\\"']$/g,'')});
-      var r={};hs.forEach(function(h,j){r[h]=vs[j]||''});
-      var dt=r[dc]||'';
-      if(dt.match(/^\\d{2}\\.\\d{2}\\.\\d{4}/)){var p=dt.split('.');dt=p[2]+'-'+p[1]+'-'+p[0]}
-      else if(dt.match(/^\\d{2}\\.\\d{2}\\.\\d{2}/)){var p=dt.split('.');dt='20'+p[2]+'-'+p[1]+'-'+p[0]}
-      var am=parseFloat((r[ac]||'').replace(/\\s/g,'').replace(',','.'));
-      if(isNaN(am)||am<=0)continue;
-      this.ib.push({d:dt,am:am,ds:sc?(r[sc]||''):''});
-    }
-    document.getElementById('ip').style.display='block';
-    var acc=DB.get('a')||[];
-    document.getElementById('iac').innerHTML=acc.map(function(z){
-      return '<option value="'+z.id+'">'+z.i+' '+z.n+'</option>';
-    }).join('')||'<option>Нет счетов</option>';
-    document.getElementById('it').innerHTML=
-    '<table style="width:100%;border-collapse:collapse">'+
-    '<thead><tr style="border-bottom:2px solid #f1f5f9">'+
-    '<th style="text-align:left;padding:6px;font-size:11px;font-weight:600">Дата</th>'+
-    '<th style="text-align:left;padding:6px;font-size:11px;font-weight:600">Сумма</th>'+
-    '<th style="text-align:left;padding:6px;font-size:11px;font-weight:600">Описание</th>'+
-    '</tr></thead><tbody>'+
-    this.ib.slice(0,10).map(function(r){
-      return '<tr style="border-bottom:1px solid #f1f5f9">'+
-      '<td style="padding:6px;font-size:12px">'+r.d+'</td>'+
-      '<td style="padding:6px;font-size:12px;font-weight:700">'+app.f(r.am)+'</td>'+
-      '<td style="padding:6px;font-size:12px;color:#64748b;max-width:140px;overflow:hidden;text-overflow:ellipsis">'+r.ds+'</td>'+
-      '</tr>';
-    }).join('')+'</tbody></table>'+
-    (this.ib.length>10?'<p style="text-align:center;color:#64748b;font-size:11px;margin-top:8px">...и ещё '+(this.ib.length-10)+' строк</p>':'');
-  },
-
-  importData(){
-    var acid=document.getElementById('iac').value;
-    var c=DB.get('c')||[];
-    var dc=c.find(function(z){return z.n==='Продукты'})||c[0];
-    var imp=0;
-    this.ib.forEach(function(r){
-      var x=DB.get('x')||[];
-      x.push({id:app.uid(),am:r.am,ac:acid,cid:dc?dc.id:1,d:r.d,ds:r.ds,t:'e'});
-      DB.set('x',x);
-      var a=DB.get('a')||[];
-      var z=a.find(function(q){return q.id===acid});
-      if(z){z.b=(+z.b||0)-r.am;DB.set('a',a)}
-      imp++;
-    });
-    alert('✅ Импортировано '+imp+' транзакций!');
-    document.getElementById('ip').style.display='none';
-    this.ib=[];
-    this.rd();this.nav('tx');
   },
 
   exportData(){
@@ -1523,16 +1587,6 @@ const app={
 
   init(){
     initD();
-    var dz=document.getElementById('dz');
-    if(dz){
-      dz.ondragover=function(e){e.preventDefault();dz.classList.add('dg')};
-      dz.ondragleave=function(e){e.preventDefault();dz.classList.remove('dg')};
-      dz.ondrop=function(e){
-        e.preventDefault();dz.classList.remove('dg');
-        var f=e.dataTransfer.files[0];
-        if(f){var r=new FileReader();r.onload=function(ev){app.parseCSV(ev.target.result)};r.readAsText(f,'UTF-8')}
-      };
-    }
   }
 };
 
