@@ -222,7 +222,7 @@ body{-ms-overflow-style:none;scrollbar-width:none}
 <div id="s-settings" class="sec" style="display:none">
 <div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Настройки</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
 <div class="card" style="text-align:center;padding:24px"><div style="font-size:52px;margin-bottom:6px">💰</div><div style="font-size:22px;font-weight:800">
-FinTrack</div><div style="font-size:13px;color:#64748b;margin-top:4px">v3.0</div></div>
+FinTrack</div><div style="font-size:13px;color:#64748b;margin-top:4px">v3.1</div></div>
 <div class="card"><div class="ct">💾 Данные</div><div style="font-size:14px;color:#64748b;margin-bottom:14px">Все данные хранятся локально на вашем устройстве.</div>
 <button class="btn btg" style="margin-bottom:8px" onclick="app.exportData()">📤 Экспорт JSON</button><label class="btn btg" style="display:block;text-align:center;cursor:pointer">
 📥 Импорт JSON<input type="file" id="ij" accept=".json" style="display:none" onchange="app.importJsonData(this)"></label></div>
@@ -456,10 +456,11 @@ const app={
       if(!cat)return '';
       var x=DB.get('x')||[];
       var spent=x.filter(function(z){return z.d&&z.d.startsWith(m)&&z.t==='e'&&z.cid===qid}).reduce(function(s,z){return s+z.am},0);
-      return '<button class="qb" onclick="app.showTxModal('+qid+')">'+
+      return '<button class="qb" onclick="app.showTxModal('+qid+')" oncontextmenu="event.preventDefault();app.showCatTx('+qid+')">'+
       '<div style="font-size:22px;margin-bottom:4px">'+cat.i+'</div>'+
       '<div style="font-size:12px;color:#64748b">'+cat.n+'</div>'+
-      '<div style="font-size:11px;color:#94a3b8;margin-top:2px">'+app.f(spent)+'</div></button>';
+      '<div style="font-size:11px;color:#94a3b8;margin-top:2px">'+app.f(spent)+'</div>'+
+      '<div style="font-size:10px;color:#10b981;margin-top:4px;font-weight:600">нажми и удерживай</div></button>';
     }).join('');
   },
 
@@ -563,6 +564,7 @@ const app={
     }
     el.innerHTML=a.map(function(z){
       var tgs=[];
+      if(z.main)tgs.push('<span class="tg" style="background:#dbeafe;color:#1d4ed8">★ главный</span>');
       if(z.h)tgs.push('<span class="tg">скрыт</span>');
       if(z.ex)tgs.push('<span class="tg" style="background:#fef3c7;color:#d97706">вне учёта</span>');
       return '<div class="card">'+
@@ -619,6 +621,9 @@ const app={
     h+='<div class="trx"><span style="font-weight:600">'+
     'Не учитывать в балансе</span><div class="tsw '+(a&&a.ex?'on':'')+'" '+
     `onclick="this.classList.toggle('on')" id="ae"></div></div>`;
+    h+='<div class="trx"><span style="font-weight:600">'+
+    '★ Главный счёт</span><div class="tsw '+(a&&a.main?'on':'')+'" '+
+    `onclick="this.classList.toggle('on')" id="amain"></div></div>`;
     h+=`<button class="btn" style="margin-top:14px" 
     onclick="app.saveAccount('${id||''}')">
     ${a?'💾 Сохранить':'➕ Создать'}</button>`;
@@ -627,6 +632,7 @@ const app={
 
   saveAccount(id){
     var a=DB.get('a')||[];
+    var isMain=document.getElementById('amain').classList.contains('on');
     var d={
       id:id||this.uid(),
       n:document.getElementById('an').value,
@@ -634,9 +640,11 @@ const app={
       i:document.getElementById('aiv').value,
       c:document.getElementById('acv').value,
       h:document.getElementById('ah').classList.contains('on'),
-      ex:document.getElementById('ae').classList.contains('on')
+      ex:document.getElementById('ae').classList.contains('on'),
+      main:isMain
     };
     if(!d.n){alert('Введите название');return}
+    if(isMain){a.forEach(function(z){z.main=false})}
     if(id){var i=a.findIndex(function(z){return z.id===id});a[i]=d}
     else a.push(d);
     DB.set('a',a);this.cl();this.rac();this.rd();
@@ -698,12 +706,8 @@ const app={
   },
 
   rtx(){
-    var x=(DB.get('x')||[]).sort(function(a,b){return b.d.localeCompare(a.d)});
+    var x=(DB.get('x')||[]).filter(function(z){return z.d}).sort(function(a,b){return b.d.localeCompare(a.d)});
     var c=DB.get('c')||[],a=DB.get('a')||[];
-    var sm=document.getElementById('tm').value||this.td().slice(0,7);
-    var st=document.getElementById('tt').value;
-    var sq=(document.getElementById('tsx')||{}).value||'';
-    sq=sq.toLowerCase();
     var me=document.getElementById('tm');
     if(!me.options.length){
       for(var i=0;i<12;i++){
@@ -711,14 +715,19 @@ const app={
         me.add(new Option(d.toLocaleString('ru',{month:'long',year:'numeric'}),
         d.toISOString().slice(0,7)));
       }
+      me.value=this.td().slice(0,7);
     }
+    var sm=me.value||this.td().slice(0,7);
+    var st=document.getElementById('tt').value||'all';
+    var sq=(document.getElementById('tsx')||{}).value||'';
+    sq=sq.toLowerCase();
     var f=x.filter(function(z){
-      if(z.d.slice(0,7)!==sm)return false;
+      if(!z.d||z.d.slice(0,7)!==sm)return false;
       if(st!=='all'&&z.t!==st)return false;
       if(sq){
         var ct=c.find(function(q){return q.id===+z.cid})||{};
         var aa=a.find(function(q){return q.id===z.ac})||{};
-        var bb=z.ac2?(a.find(function(q){return q.id===z.ac})||{}):{};
+        var bb=z.ac2?(a.find(function(q){return q.id===z.ac2})||{}):{};
         var txt=(z.ds||'')+' '+(ct.n||'')+' '+(aa.n||'')+' '+(bb.n||'');
         if(txt.toLowerCase().indexOf(sq)===-1)return false;
       }
@@ -765,12 +774,14 @@ const app={
         `<button onclick="app.showTxEdit('${t.id}')" style="background:none;border:none;font-size:16px;color:#94a3b8;cursor:pointer;padding:4px">✏️</button>`+
         `<button onclick="app.delTx('${t.id}')" style="background:none;border:none;font-size:16px;color:#94a3b8;cursor:pointer;padding:4px">🗑️</button></div>`;
     }).join('');
+    return hd;
   }).join('');
   },
 
   showTxModal(cid){
     var c=this.ct('e');var a=DB.get('a')||[];
     if(!a.length){alert('Сначала создайте счёт');return}
+    var main=a.find(function(z){return z.main});
     var h='<div class="fg"><label class="fl">Тип</label>'+
     '<select class="fi" id="ttx" onchange="app.txc()">'+
     '<option value="e">📉 Расход</option><option value="i">📈 Доход</option>'+
@@ -779,11 +790,13 @@ const app={
     '<input class="fi" id="tam" type="number" placeholder="0" autofocus></div>';
     h+='<div class="fg"><label class="fl">Счёт</label>'+
     '<select class="fi" id="tac">'+a.map(function(z){
-      return '<option value="'+z.id+'">'+z.i+' '+z.n+'</option>';
+      var s=main&&z.id===main.id?' selected':'';
+      return '<option value="'+z.id+'"'+s+'>'+z.i+' '+z.n+'</option>';
     }).join('')+'</select></div>';
     h+='<div class="fg"><label class="fl">Категория</label>'+
     '<select class="fi" id="tct">'+c.map(function(z){
-      return '<option value="'+z.id+'"'+(z.id===cid?' selected':'')+'>'+z.i+' '+z.n+'</option>';
+      var s=cid&&z.id===cid?' selected':'';
+      return '<option value="'+z.id+'"'+s+'>'+z.i+' '+z.n+'</option>';
     }).join('')+'</select></div>';
     h+='<div class="fg"><label class="fl">Дата</label>'+
     '<input class="fi" id="tdt" type="date" value="'+this.td()+'"></div>';
@@ -891,6 +904,44 @@ const app={
     this.cl();this.rtx();this.rd();this.rb();
   },
 
+  showCatTx(cid){
+    var c=(DB.get('c')||[]).find(function(q){return q.id===+cid})||{};
+    var x=(DB.get('x')||[]).filter(function(z){return +z.cid===+cid&&z.d}).sort(function(a,b){return b.d.localeCompare(a.d)});
+    var a=DB.get('a')||[];
+    var m=this.cm();
+    var mx=x.filter(function(z){return z.d.slice(0,7)===m});
+    var total=mx.reduce(function(s,z){return s+z.am},0);
+    var h='<div style="text-align:center;margin-bottom:16px">'+
+    '<div style="font-size:48px">'+c.i+'</div>'+
+    '<div style="font-size:18px;font-weight:800">'+c.n+'</div>'+
+    '<div style="font-size:14px;color:#64748b;margin-top:4px">'+
+    'Всего: '+x.length+' операций · За месяц: '+this.f(total)+'</div></div>';
+    if(!x.length){
+      h+='<div class="em"><div class="ei">📝</div><div class="et">Нет операций</div></div>';
+    }else{
+      var g={};
+      x.slice(0,50).forEach(function(z){g[z.d]=g[z.d]||[];g[z.d].push(z)});
+      h+=Object.keys(g).sort(function(a,b){return b.localeCompare(a)}).map(function(dt){
+        var d=new Date(dt+'T12:00:00');
+        var hd='<div style="margin-bottom:12px">'+
+        '<div style="font-size:12px;color:#64748b;margin-bottom:6px;font-weight:600">'+
+        d.toLocaleDateString('ru',{weekday:'short',day:'numeric',month:'long'})+
+        '</div>';
+        hd+=g[dt].map(function(t){
+          var ac=a.find(function(q){return q.id===t.ac})||{};
+          return '<div class="card" style="margin:4px 0;padding:10px;'+
+          'display:flex;align-items:center;gap:10px">'+
+          '<div class="ln" style="flex:1"><div class="lt">'+(t.ds||'—')+'</div>'+
+          '<div class="ls">'+(ac.n||'')+'</div></div>'+
+          '<div class="la" style="color:'+(t.t==='e'?'#ef4444':'#10b981')+'">'+
+          (t.t==='e'?'-':'+')+app.f(t.am)+'</div></div>';
+        }).join('');
+        return hd+'</div>';
+      }).join('');
+    }
+    this.md('📋 Операции: '+c.i+' '+c.n,h);
+  },
+
   rb(){
     var c=this.ct('e'),x=DB.get('x')||[];
     var m=this.td().slice(0,7);
@@ -905,19 +956,20 @@ const app={
     document.getElementById('bl').innerHTML=c.map(function(z){
       var s=sb[z.id]||0,b=+z.b||0,pct=b?Math.min(100,Math.round(s/b*100)):0;
       var cl=pct>=100?'#ef4444':pct>=80?'#f59e0b':'#10b981';
-      return '<div class="bi"><div class="bh">'+
+      return '<div class="bi"><div class="bh" style="cursor:pointer" onclick="app.showCatTx('+z.id+')">'+
       '<div style="font-size:22px">'+z.i+'</div>'+
       '<div style="flex:1"><div class="bnm">'+z.n+'</div>'+
       '<div class="bns">'+app.f(s)+(b?' из '+app.f(b)+' · '+pct+'%':'')+
-      '</div></div>'+
-      '<button style="background:none;border:none;font-size:16px;'+
-      'color:#94a3b8;cursor:pointer;padding:4px" '+
-      'onclick="app.eb('+z.id+')">✏️</button></div>'+
-      (b?'<div class="bb"><div class="bf" style="width:'+pct+'%;'+
+      '</div></div></div>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center">'+
+      (b?'<div class="bb" style="flex:1;margin-right:8px"><div class="bf" style="width:'+pct+'%;'+
       'background:'+cl+'"></div></div>':
-      '<div style="font-size:12px;color:#64748b">Лимит не задан — '+
+      '<div style="font-size:12px;color:#64748b;flex:1">Лимит не задан — '+
       '<span style="color:#10b981;cursor:pointer;font-weight:600" '+
-      'onclick="app.eb('+z.id+')">задать</span></div>')+'</div>';
+      'onclick="app.eb('+z.id+')">задать</span></div>')+
+      '<button style="background:none;border:none;font-size:16px;'+
+      'color:#94a3b8;cursor:pointer;padding:4px;flex-shrink:0" '+
+      'onclick="app.eb('+z.id+')">✏️</button></div></div>';
     }).join('');
   },
 
