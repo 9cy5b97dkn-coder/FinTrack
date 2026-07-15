@@ -425,12 +425,7 @@ const app={
       var ed=ms.map(function(m){return x.filter(function(z){return z.t==='e'&&z.d.slice(0,7)===m}).reduce(function(s,z){return s+z.am},0)});
       var id=ms.map(function(m){return x.filter(function(z){return z.t==='i'&&z.d.slice(0,7)===m}).reduce(function(s,z){return s+z.am},0)});
       if(this.ch.m6)this.ch.m6.destroy();
-      this.ch.m6=new Chart(el,{type:'bar',
-      data:{labels:ms.map(function(m){var p=m.split('-');return p[1]+'.'+p[0].slice(2)}),
-      datasets:[{label:'Расходы',data:ed,backgroundColor:'#ef4444',borderRadius:6},
-      {label:'Доходы',data:id,backgroundColor:'#10b981',borderRadius:6}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true,grid:{display:false}},x:{grid:{display:false}}}});
+      this.ch.m6=new Chart(el,{type:'bar',data:{labels:ms.map(function(m){var p=m.split('-');return p[1]+'.'+p[0].slice(2)}),datasets:[{label:'Расходы',data:ed,backgroundColor:'#ef4444',borderRadius:6},{label:'Доходы',data:id,backgroundColor:'#10b981',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{display:false}},x:{grid:{display:false}}}});
     }catch(e){console.log('Chart error:',e)}
   },
 
@@ -453,13 +448,8 @@ const app={
     var t=(a?'Редактировать':'Новый')+' счёт';
     var h='<div class="fg"><label class="fl">Название</label><input class="fi" id="an" value="'+(a?a.n:'')+'" placeholder="Например: Тинькофф Black"></div>';
     h+='<div class="fg"><label class="fl">Баланс</label><input class="fi" id="ab" type="number" value="'+(a?a.b:'')+'" placeholder="0"></div>';
-    h+='<div class="fg"><label class="fl">Иконка</label><div style="display:flex;gap:8px;flex-wrap:wrap">'+ic.map(function(i){return'<button onclick="document.getElementById(\'aiv\').value=\''+i+'\';'+
-    'document.querySelectorAll(\'.ib\').forEach(function(b){b.style.border=\'2px solid transparent\'});'+
-    'this.style.border=\'2px solid #10b981\'" class="ib" style="width:44px;height:44px;font-size:22px;'+
-    'border-radius:12px;border:2px solid '+(a&&a.i===i?'#10b981':'transparent')+';background:#f1f5f9;cursor:pointer">'+i+'</button>'}).join('')+'</div><input type="hidden" id="aiv" value="'+(a?a.i:'💵')+'"></div>';
-    h+='<div class="fg"><label class="fl">Цвет</label><div style="display:flex;gap:8px;flex-wrap:wrap">'+cs.map(function(c){return'<button onclick="document.getElementById(\'acv\').value=\''+c+'\';'+
-    'document.querySelectorAll(\'.cb\').forEach(function(b){b.style.transform=\'scale(1)\'});'+
-    'this.style.transform=\'scale(1.25)\'" class="cb" style="width:32px;height:32px;border-radius:50%;background:'+c+';border:'+(a&&a.c===c?'3px solid #333':'none')+';cursor:pointer;transition:.2s"></button>'}).join('')+'</div><input type="hidden" id="acv" value="'+(a?a.c:'#4F46E5')+'"></div>';
+    h+='<div class="fg"><label class="fl">Иконка</label><div style="display:flex;gap:8px;flex-wrap:wrap">'+ic.map(function(i){return'<button onclick="document.getElementById(\'aiv\').value=\''+i+'\';document.querySelectorAll(\'.ib\').forEach(function(b){b.style.border=\'2px solid transparent\'});this.style.border=\'2px solid #10b981\'" class="ib" style="width:44px;height:44px;font-size:22px;border-radius:12px;border:2px solid '+(a&&a.i===i?'#10b981':'transparent')+';background:#f1f5f9;cursor:pointer">'+i+'</button>'}).join('')+'</div><input type="hidden" id="aiv" value="'+(a?a.i:'💵')+'"></div>';
+    h+='<div class="fg"><label class="fl">Цвет</label><div style="display:flex;gap:8px;flex-wrap:wrap">'+cs.map(function(c){return'<button onclick="document.getElementById(\'acv\').value=\''+c+'\';document.querySelectorAll(\'.cb\').forEach(function(b){b.style.transform=\'scale(1)\'});this.style.transform=\'scale(1.25)\'" class="cb" style="width:32px;height:32px;border-radius:50%;background:'+c+';border:'+(a&&a.c===c?'3px solid #333':'none')+';cursor:pointer;transition:.2s"></button>'}).join('')+'</div><input type="hidden" id="acv" value="'+(a?a.c:'#4F46E5')+'"></div>';
     h+='<div class="tr"><span style="font-weight:600">Скрыть с главной</span><div class="ts '+(a&&a.h?'on':'')+'" onclick="this.classList.toggle(\'on\')" id="ah"></div></div>';
     h+='<div class="tr"><span style="font-weight:600">Не учитывать в балансе</span><div class="ts '+(a&&a.ex?'on':'')+'" onclick="this.classList.toggle(\'on\')" id="ae"></div></div>';
     h+='<button class="btn" style="margin-top:14px" onclick="app.saveAccount(\''+(id||'')+'\')">'+(a?'💾 Сохранить':'➕ Создать')+'</button>';
@@ -467,7 +457,7 @@ const app={
   },
   saveAccount(id){
     var a=DB.get('a')||[];
-    var d={id:id||this.uid(),n:document.getElementById('an').value,bal:+document.getElementById('ab').value||0,i:document.getElementById('aiv').value,c:document.getElementById('acv').value,h:document.getElementById('ah').classList.contains('on'),ex:document.getElementById('ae').classList.contains('on')};
+    var d={id:id||this.uid(),n:document.getElementById('an').value,b:+document.getElementById('ab').value||0,i:document.getElementById('aiv').value,c:document.getElementById('acv').value,h:document.getElementById('ah').classList.contains('on'),ex:document.getElementById('ae').classList.contains('on')};
     if(!d.n){alert('Введите название');return}
     if(id){var i=a.findIndex(function(z){return z.id===id});a[i]=d}else a.push(d);
     DB.set('a',a);this.cl();this.rac();this.rd();
@@ -600,9 +590,7 @@ const app={
     var h='<div class="fg"><label class="fl">Название</label><input class="fi" id="pn" placeholder="Netflix, Spotify, iCloud..."></div>';
     h+='<div class="fg"><label class="fl">Сумма, ₽</label><input class="fi" id="pam" type="number" placeholder="599"></div>';
     h+='<div class="fg"><label class="fl">Категория</label><select class="fi" id="pc">'+c.map(function(z){return'<option value="'+z.id+'">'+z.i+' '+z.n+'</option>'}).join('')+'</select></div>';
-    h+='<div class="fg"><label class="fl">Период</label><select class="fi" id="pf">'+
-    '<option value="m">📅 Каждый месяц</option><option value="w">📅 Каждую неделю</option>'+
-    '<option value="y">📅 Каждый год</option></select></div>';
+    h+='<div class="fg"><label class="fl">Период</label><select class="fi" id="pf"><option value="m">📅 Каждый месяц</option><option value="w">📅 Каждую неделю</option><option value="y">📅 Каждый год</option></select></div>';
     h+='<div class="fg"><label class="fl">Следующий платеж</label><input class="fi" id="pnx" type="date" value="'+this.td()+'"></div>';
     h+='<button class="btn" onclick="app.svp()">➕ Добавить</button>';
     this.md('Новая подписка',h);
@@ -627,30 +615,17 @@ const app={
     var ms=[];
     for(var i=5;i>=0;i--){var d=new Date();d.setMonth(d.getMonth()-i);ms.push(d.toISOString().slice(0,7))}
     var me=ms.map(function(m){return x.filter(function(z){return z.t==='e'&&z.d.slice(0,7)===m}).reduce(function(s,z){return s+z.am},0)});
-    try{
-      if(this.ch.mh)this.ch.mh.destroy();
-      this.ch.mh=new Chart(document.getElementById('cm'),{type:'bar',
-      data:{labels:ms.map(function(m){var p=m.split('-');return p[1]+'.'+p[0].slice(2)}),
-      datasets:[{label:'Расходы',data:me,backgroundColor:'#ef4444',borderRadius:6}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true,grid:{display:false}},x:{grid:{display:false}}}});
-    }catch(e){}
+    try{if(this.ch.mh)this.ch.mh.destroy();this.ch.mh=new Chart(document.getElementById('cm'),{type:'bar',data:{labels:ms.map(function(m){var p=m.split('-');return p[1]+'.'+p[0].slice(2)}),datasets:[{label:'Расходы',data:me,backgroundColor:'#ef4444',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{display:false}},x:{grid:{display:false}}}}})}catch(e){}
     var c=DB.get('c')||[];
     var bc={};mx.forEach(function(z){bc[z.cid]=(bc[z.cid]||0)+z.am});
     var pl=[],pd=[],pc=[];
     Object.keys(bc).sort(function(a,b){return bc[b]-bc[a]}).slice(0,8).forEach(function(cid){var z=c.find(function(q){return q.id===+cid});pl.push(z?z.n:'Другое');pd.push(bc[cid]);pc.push(z?z.c:'#999')});
-    try{
-      if(this.ch.p)this.ch.p.destroy();
-      this.ch.p=new Chart(document.getElementById('cp'),{type:'doughnut',
-      data:{labels:pl,datasets:[{data:pd,backgroundColor:pc,borderWidth:0}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:14,font:{size:11},padding:10}}},cutout:'68%'}});
-    }catch(e){}
+    try{if(this.ch.p)this.ch.p.destroy();this.ch.p=new Chart(document.getElementById('cp'),{type:'doughnut',data:{labels:pl,datasets:[{data:pd,backgroundColor:pc,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:14,font:{size:11},padding:10}}},cutout:'68%'}})}catch(e){}
     var pm=new Date();pm.setMonth(pm.getMonth()-1);
     var ps=pm.toISOString().slice(0,7);
     var pe=x.filter(function(z){return z.t==='e'&&z.d.slice(0,7)===ps}).reduce(function(s,z){return s+z.am},0);
     var ins=[];
-    if(pe>0){var cg=((te-pe)/pe*100).toFixed(0);
-      ins.push({i:cg>20?'⚠️':'📊',t:cg>20?'Расходы выросли':'Динамика расходов',x:cg>20?'На '+cg+'% больше прошлого месяца':cg<0?'На '+Math.abs(cg)+'% меньше прошлого месяца':'На том же уровне'})}
+    if(pe>0){var cg=((te-pe)/pe*100).toFixed(0);ins.push({i:cg>20?'⚠️':'📊',t:cg>20?'Расходы выросли':'Динамика расходов',x:cg>20?'На '+cg+'% больше прошлого месяца':cg<0?'На '+Math.abs(cg)+'% меньше прошлого месяца':'На том же уровне'})}
     ins.push({i:'📊',t:'Прогноз на месяц',x:'При текущем темпе к концу месяца: '+this.f(dl*dm)});
     ins.push({i:'💡',t:'Совет',x:'Правило 50/30/20: 50% на нужды, 30% на хотелки, 20% на сбережения'});
     document.getElementById('il').innerHTML=ins.map(function(z){return'<div class="ig"><div class="ii">'+z.i+'</div><div><div class="it">'+z.t+'</div><div class="ix">'+z.x+'</div></div></div>'}).join('');
@@ -660,7 +635,7 @@ const app={
   parseCSV(txt){
     var ls=txt.trim().split('\n');if(ls.length<2){alert('Файл пустой');return}
     var dl=ls[0].includes(';')?';':',';
-    var hs=ls[0].split(dl).map(function(h){return h.trim().replace(/^[\"']|[\"']$/g,'')});
+    var hs=ls[0].split(dl).map(function(h){return h.trim().replace(/^["']|["']$/g,'')});
     var hl=hs.map(function(h){return h.toLowerCase()});
     var fn=function(kw){var i=hl.findIndex(function(h){return kw.some(function(k){return h.includes(k)})});return i>=0?hs[i]:null};
     var dc=fn(['date','дата','дата операции']);
@@ -669,7 +644,7 @@ const app={
     if(!dc||!ac){alert('Не удалось определить колонки');return}
     this.ib=[];
     for(var i=1;i<ls.length;i++){
-      var vs=ls[i].split(dl).map(function(v){return v.trim().replace(/^[\"']|[\"']$/g,'')});
+      var vs=ls[i].split(dl).map(function(v){return v.trim().replace(/^["']|["']$/g,'')});
       var r={};hs.forEach(function(h,j){r[h]=vs[j]||''});
       var dt=r[dc]||'';
       if(dt.match(/^\d{2}\.\d{2}\.\d{4}/)){var p=dt.split('.');dt=p[2]+'-'+p[1]+'-'+p[0]}
@@ -681,13 +656,7 @@ const app={
     document.getElementById('ip').style.display='block';
     var acc=DB.get('a')||[];
     document.getElementById('iac').innerHTML=acc.map(function(z){return'<option value="'+z.id+'">'+z.i+' '+z.n+'</option>'}).join('')||'<option>Нет счетов</option>';
-    document.getElementById('it').innerHTML='<table style="width:100%;border-collapse:collapse">'+
-    '<thead><tr style="border-bottom:2px solid #f1f5f9">'+
-    '<th style="text-align:left;padding:6px;font-size:11px;font-weight:600">Дата<\/th>'+
-    '<th style="text-align:left;padding:6px;font-size:11px;font-weight:600">Сумма<\/th>'+
-    '<th style="text-align:left;padding:6px;font-size:11px;font-weight:600">Описание<\/th><\/tr><\/thead><tbody>'+
-    this.ib.slice(0,10).map(function(r){return'<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px;font-size:12px">'+r.d+'<\/td><td style="padding:6px;font-size:12px;font-weight:700">'+app.f(r.am)+'<\/td><td style="padding:6px;font-size:12px;color:#64748b;max-width:140px;overflow:hidden;text-overflow:ellipsis">'+r.ds+'<\/td><\/tr>'}).join('')+'<\/tbody><\/table>'+
-    (this.ib.length>10?'<p style="text-align:center;color:#64748b;font-size:11px;margin-top:8px">...и ещё '+(this.ib.length-10)+' строк<\/p>':'');
+    document.getElementById('it').innerHTML='<table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:2px solid #f1f5f9"><th style="text-align:left;padding:6px;font-size:11px;font-weight:600">Дата<\/th><th style="text-align:left;padding:6px;font-size:11px;font-weight:600">Сумма<\/th><th style="text-align:left;padding:6px;font-size:11px;font-weight:600">Описание<\/th><\/tr><\/thead><tbody>'+this.ib.slice(0,10).map(function(r){return'<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px;font-size:12px">'+r.d+'<\/td><td style="padding:6px;font-size:12px;font-weight:700">'+app.f(r.am)+'<\/td><td style="padding:6px;font-size:12px;color:#64748b;max-width:140px;overflow:hidden;text-overflow:ellipsis">'+r.ds+'<\/td><\/tr>'}).join('')+'<\/tbody><\/table>'+(this.ib.length>10?'<p style="text-align:center;color:#64748b;font-size:11px;margin-top:8px">...и ещё '+(this.ib.length-10)+' строк<\/p>':'');
   },
   importData(){
     var acid=document.getElementById('iac').value;
@@ -732,7 +701,7 @@ const app={
     if(ex)ex.remove();
     var d=document.createElement('div');
     d.id='mO';d.className='mo';
-    d.innerHTML='<div class="mc"><div class="mh"><div class="mt">'+t+'</div><button class="mcl" onclick="app.cl()">✕</button></div>'+c+'</div>';
+    d.innerHTML='<div class="mc"><div class="mh"><div class="mt">'+t+'<\/div><button class="mcl" onclick="app.cl()">✕<\/button><\/div>'+c+'<\/div>';
     d.onclick=function(e){if(e.target===d)app.cl()};
     document.body.appendChild(d);
     document.body.style.overflow='hidden';
