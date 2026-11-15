@@ -1,1 +1,833 @@
-FinTrack v3.3 - please download from https://tmloizvcrlwqs.kimi.page/index.html and upload manually. Full source available at deploy URL.
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ecfdf5">
+<link rel="apple-touch-icon"
+href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%2310b981' rx='22' width='100' height='100'/%3E%3Ctext y='.9em' x='50%' text-anchor='middle' font-size='65'%3E%F0%9F%92%B0%3C/text%3E%3C/svg%3E">
+<title>FinTrack</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8fafc;color:#0f172a;-webkit-font-smoothing:antialiased}
+.app{max-width:520px;margin:0 auto;min-height:100vh;position:relative;padding-bottom:90px}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(248,250,252,0.92);backdrop-filter:blur(20px);
+padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f1f5f9}
+.tbl{display:flex;align-items:center;gap:10px}
+.tbl .lgi{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;font-size:18px}
+.tbl .lgt{font-size:17px;font-weight:800}
+.sbtn{background:none;border:none;font-size:20px;cursor:pointer;padding:4px;color:#94a3b8}
+.bcard{background:linear-gradient(135deg,#10b981,#059669);border-radius:18px;padding:22px;margin:14px 18px;
+color:#fff;position:relative;overflow:hidden;box-shadow:0 6px 24px rgba(16,185,129,0.22)}
+.bcard::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,0.08);border-radius:50%}
+.bcard .bl{position:relative;font-size:12px;opacity:0.8;letter-spacing:0.5px}
+.bcard .ba{position:relative;font-size:34px;font-weight:800;margin-top:6px}
+.bcard .bs{position:relative;font-size:13px;opacity:0.7;margin-top:4px}
+.srow{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px;margin-bottom:10px}
+.scard{background:#fff;border-radius:14px;padding:14px;border:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,0.03);transition:transform 0.15s}
+.scard:active{transform:scale(0.97)}
+.scard .si{font-size:20px;margin-bottom:4px}
+.scard .sl{font-size:11px;color:#64748b;font-weight:600}
+.scard .sv{font-size:17px;font-weight:700;margin-top:3px}
+.card{background:#fff;border-radius:18px;padding:18px;margin:10px 18px;box-shadow:0 1px 3px rgba(0,0,0,0.03);border:1px solid #f1f5f9}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.ct{font-size:16px;font-weight:700;display:flex;align-items:center;gap:6px}
+.cm{font-size:13px;color:#10b981;font-weight:600;cursor:pointer;background:none;border:none;padding:4px 8px;border-radius:8px}
+.cm:active{background:#d1fae5}
+.cg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:2px}
+.qb{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:10px 6px;border-radius:14px;transition:all 0.15s;border:1px solid #f1f5f9;background:#fff}
+.qb:active{transform:scale(0.92);background:#f0fdf4;border-color:#10b981}
+.btn{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:14px;padding:15px;
+font-size:15px;font-weight:700;width:100%;cursor:pointer;display:flex;align-items:center;justify-content:center;
+gap:8px;box-shadow:0 4px 16px rgba(16,185,129,0.25)}
+.btn:active{transform:scale(0.97)}
+.btg{background:#f8fafc;color:#64748b;border:1.5px solid #e2e8f0;box-shadow:none}
+.btr{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 16px rgba(239,68,68,0.25)}
+.bts{padding:10px 16px;font-size:13px;border-radius:12px;width:auto}
+.fab{position:fixed;bottom:calc(76px + env(safe-area-inset-bottom));right:16px;width:54px;height:54px;
+border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;font-size:26px;
+cursor:pointer;box-shadow:0 6px 24px rgba(16,185,129,0.35);display:flex;align-items:center;justify-content:center;
+z-index:100;transition:transform 0.2s}
+.fab:active{transform:scale(0.9)}
+.li{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9}
+.li:last-child{border-bottom:none}
+.lx{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:#ecfdf5}
+.ln{flex:1;min-width:0}
+.lt{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ls{font-size:12px;color:#64748b;margin-top:1px}
+.la{font-size:14px;font-weight:700}
+.bi{padding:12px 0;border-bottom:1px solid #f1f5f9}
+.bi:last-child{border-bottom:none}
+.bh{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.bnm{font-size:14px;font-weight:600;flex:1}
+.bns{font-size:12px;color:#64748b}
+.bb{height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden}
+.bf{height:100%;border-radius:4px;transition:width 0.5s}
+.dc{background:#fff;border-radius:18px;padding:16px;margin:10px 18px;box-shadow:0 1px 3px rgba(0,0,0,0.03);border:1px solid #f1f5f9}
+.dh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.dp{height:8px;background:#f1f5f9;border-radius:4px;margin:10px 0;overflow:hidden}
+.df{height:100%;border-radius:4px;transition:width 0.5s}
+.sd{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600}
+.su{background:#fef2f2;color:#dc2626}
+.sw{background:#fffbeb;color:#d97706}
+.so{background:#ecfdf5;color:#059669}
+.idz{border:2px dashed #e2e8f0;border-radius:18px;padding:36px 20px;text-align:center;margin:14px 0;background:#f8fafc}
+.idz.dg{border-color:#10b981;background:#ecfdf5}
+.fg{margin-bottom:14px}
+.fl{font-size:12px;font-weight:600;color:#64748b;margin-bottom:6px;display:block}
+.fi{width:100%;padding:14px 16px;border:1.5px solid #e2e8f0;border-radius:14px;font-size:16px;background:#f8fafc;-webkit-appearance:none}
+.fi:focus{outline:none;border-color:#10b981}
+.mo{position:fixed;inset:0;background:rgba(15,23,42,0.4);backdrop-filter:blur(6px);z-index:2000;display:flex;align-items:flex-end;justify-content:center}
+.mc{background:#fff;border-radius:22px 22px 0 0;width:100%;max-width:520px;padding:22px 22px calc(28px + env(safe-area-inset-bottom));max-height:92vh;overflow-y:auto}
+.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.mt{font-size:17px;font-weight:800}
+.mcl{background:#f8fafc;border:none;font-size:20px;color:#94a3b8;cursor:pointer;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.tg{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;background:#ecfdf5;color:#059669}
+.bn{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;background:rgba(255,255,255,0.95);
+backdrop-filter:blur(20px);border-top:1px solid #f1f5f9;display:flex;justify-content:space-around;padding:8px 0 calc(8px + env(safe-area-inset-bottom));
+z-index:1000}
+#ld{display:none!important}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;cursor:pointer;
+border:none;background:none;color:#94a3b8;font-size:10px;font-weight:600;transition:0.2s;border-radius:10px;
+margin:0 3px}
+.ni svg{width:22px;height:22px;stroke-width:2}
+.ni.a{color:#10b981;background:#ecfdf5}
+::-webkit-scrollbar{display:none}
+body{-ms-overflow-style:none;scrollbar-width:none}
+.em{text-align:center;padding:36px 20px;color:#64748b}
+.em .ei{font-size:44px;margin-bottom:10px;opacity:0.4}
+.em .et{font-size:15px;font-weight:600}
+.em .es{font-size:13px;margin-top:4px;opacity:0.6}
+.ig{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start}
+.ig:last-child{border-bottom:none}
+.ii{font-size:22px;flex-shrink:0}
+.it{font-size:14px;font-weight:700}
+.ix{font-size:13px;color:#64748b;margin-top:2px;line-height:1.4}
+.cw{position:relative;height:190px;margin-top:6px}
+.trx{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f1f5f9}
+.trx:last-child{border-bottom:none}
+.tsw{width:48px;height:28px;background:#e2e8f0;border-radius:14px;position:relative;cursor:pointer;transition:0.2s;flex-shrink:0}
+.tsw.on{background:#10b981}
+.tsw::after{content:'';position:absolute;width:22px;height:22px;background:#fff;border-radius:50%;top:3px;left:3px;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.tsw.on::after{left:23px}
+.hid{display:none!important}
+.sch{position:sticky;top:60px;z-index:90;padding:8px 18px;background:rgba(248,250,252,0.95);backdrop-filter:blur(10px)}
+.cap-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px;margin-bottom:10px}
+.cap-card{background:#fff;border-radius:14px;padding:14px;border:1px solid #f1f5f9;text-align:center}
+.cap-card .cv{font-size:18px;font-weight:800;margin-top:4px}
+.cap-card .cl{font-size:11px;color:#64748b;font-weight:600}
+.gcard{background:#fff;border-radius:18px;padding:16px;margin:10px 18px;box-shadow:0 1px 3px rgba(0,0,0,0.03);border:1px solid #f1f5f9}
+.gh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.gn{font-size:15px;font-weight:700}
+.gv{font-size:14px;color:#64748b}
+.gp{height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;margin:8px 0}
+.gf{height:100%;border-radius:4px;transition:width 0.5s}
+.txi{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #f1f5f9}
+.txi:last-child{border-bottom:none}
+.txa{font-size:14px;font-weight:700;white-space:nowrap}
+.txd{font-size:12px;color:#64748b}
+</style>
+</head>
+<body>
+<div class="app">
+<div id="ma" style="display:block">
+<div id="s-dash" class="sec">
+<div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">FinTrack</div></div><button class="sbtn" onclick="app.nav('settings')">⚙️</button></div>
+<div class="bcard" onclick="app.nav('accounts')"><div class="bl">Общий баланс</div><div class="ba" id="db">0 ₽</div><div class="bs" id="da">0 счетов</div></div>
+<div class="srow">
+<div class="scard" onclick="app.nav('tx')"><div class="si">📉</div><div class="sl">Расходы</div><div class="sv" style="color:#ef4444" id="de">0 ₽</div></div>
+<div class="scard" onclick="app.nav('tx')"><div class="si">📈</div><div class="sl">Доходы</div><div class="sv" style="color:#10b981" id="di">0 ₽</div></div>
+<div class="scard" onclick="app.nav('planned')"><div class="si">📅</div><div class="sl">Подписки</div><div class="sv" style="color:#3b82f6" id="dp">0 ₽</div></div>
+<div class="scard" onclick="app.nav('budget')"><div class="si">🎯</div><div class="sl">Бюджет</div><div class="sv" style="color:#f59e0b" id="dbg">0%</div></div>
+</div>
+<div class="card"><div class="ch"><div class="ct">⚡ Быстрая трата</div><button class="cm" onclick="app.sqs()">⚙️ Настроить</button></div><div id="dcg" class="cg"></div></div>
+<div class="card"><div class="ct">📊 Расходы по месяцам</div><div class="cw"><canvas id="c6"></canvas></div></div>
+<div class="card"><div class="ch"><div class="ct">💳 Счета</div><button class="cm" onclick="app.nav('accounts')">Все →</button></div><div id="dal"></div></div>
+<div class="card"><div class="ch"><div class="ct">🐷 Вклады</div><button class="cm" onclick="app.nav('deposits')">Все →</button></div><div id="ddl"></div></div>
+<div class="card"><div class="ch"><div class="ct">🎯 Цели</div><button class="cm" onclick="app.nav('goals')">Все →</button></div><div id="dgl"></div></div>
+</div>
+<div id="s-accounts" class="sec" style="display:none">
+<div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Счета</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
+<div style="padding:16px"><button class="btn" onclick="app.showAccountModal()">+ Добавить счёт</button></div>
+<div id="al"></div>
+</div>
+<div id="s-tx" class="sec" style="display:none">
+<div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Операции</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
+<div class="card"><button class="btn" onclick="app.showTxModal()">+ Транзакция</button><button class="btn btg" style="margin-top:8px" onclick="app.showTransferModal()">
+↔️ Перевод</button></div>
+<div class="sch"><input class="fi" id="tsx" placeholder="🔍 Поиск по операциям..." oninput="app.rtx()"></div>
+<div style="margin:10px 18px;display:flex;gap:10px">
+<select id="tm" class="fi" style="flex:1;font-size:14px" onchange="app.rtx()"></select>
+<select id="tt" class="fi" style="flex:1;font-size:14px" onchange="app.rtx()"><option value="all">Все</option><option value="e">
+Расходы</option><option value="i">Доходы</option><option value="transfer">Переводы</option></select>
+</div>
+<div id="tl"></div>
+</div>
+<div id="s-budget" class="sec" style="display:none">
+<div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Бюджет</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
+<div class="bcard" style="background:linear-gradient(135deg,#f59e0b,#f97316);box-shadow:0 6px 24px rgba(245,158,11,0.22)">
+<div class="bl">Бюджет на месяц</div><div class="ba" id="btd">0 ₽</div><div class="bs" id="bsd">Потрачено: 0 ₽</div></div>
+<div class="card"><div class="ch"><div class="ct">📊 По категориям</div><button class="cm" onclick="app.showAddCatModal()">+ Категория</button></div><div id="bl"></div></div>
+</div>
+<div id="s-deposits" class="sec" style="display:none">
+<div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Вклады</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
+<div style="padding:16px"><button class="btn" onclick="app.showDepositModal()">+ Добавить вклад</button></div>
+<div id="dl"></div>
+</div>
+<div id="s-planned" class="sec" style="display:none">
+<div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Подписки</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
+<div style="padding:16px"><button class="btn" onclick="app.showPlannedModal()">+ Добавить подписку</button></div>
+<div id="pl"></div>
+</div>
+<div id="s-analytics" class="sec" style="display:none">
+<div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Аналитика</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
+<div class="card" style="text-align:center;padding:24px;background:linear-gradient(135deg,#10b981,#059669);color:#fff">
+<div style="font-size:13px;opacity:0.8;margin-bottom:8px">🏥 Финансовое здоровье</div>
+<div style="font-size:56px;font-weight:800" id="ahs">—</div>
+<div style="font-size:13px;opacity:0.8;margin-top:4px" id="aht">Начните вести учёт</div>
+<div style="height:6px;background:rgba(255,255,255,0.2);border-radius:3px;margin-top:12px;overflow:hidden">
+<div id="ahp" style="height:100%;background:#fff;border-radius:3px;transition:width 0.8s;width:0%"></div></div>
+</div>
+<div class="srow">
+<div class="scard"><div class="si" style="color:#10b981">💰</div><div class="sl">Коэф. сбережений</div><div class="sv" id="asr">—</div></div>
+<div class="scard"><div class="si" style="color:#3b82f6">🛡️</div><div class="sl">Фонд безопасности</div><div class="sv" id="aef">—</div></div>
+</div>
+<div class="card"><div class="ct">📊 Структура расходов (50/30/10/10)</div>
+<div style="display:flex;height:32px;border-radius:10px;overflow:hidden;margin:14px 0">
+<div id="b50" style="background:#10b981;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:width 0.5s">Нужды</div>
+<div id="b30" style="background:#3b82f6;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:width 0.5s">Хотелки</div>
+<div id="b10s" style="background:#f59e0b;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:width 0.5s">Сбер.</div>
+<div id="b10i" style="background:#8b5cf6;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:width 0.5s">Инв.</div>
+</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:#64748b">
+<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:#10b981"></div><span id="l50">Нужды —</span></div>
+<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:#3b82f6"></div><span id="l30">Хотелки —</span></div>
+<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:#f59e0b"></div><span id="l10s">Сбережения —</span></div>
+<div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:3px;background:#8b5cf6"></div><span id="l10i">Инвестиции —</span></div>
+</div></div>
+<div class="card"><div class="ct">📈 По месяцам</div><div class="cw"><canvas id="cm"></canvas></div></div>
+<div class="card"><div class="ct">📅 По дням недели</div><div class="cw"><canvas id="cwd"></canvas></div></div>
+<div class="card"><div class="ct">🥧 По категориям</div><div class="cw"><canvas id="cp"></canvas></div></div>
+<div class="card"><div class="ct">📊 Динамика категорий</div><div id="tcl"></div></div>
+<div class="card"><div class="ct">💡 Персональные инсайты</div><div id="il"></div></div>
+</div>
+<div id="s-reports" class="sec" style="display:none">
+<div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Отчёты</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
+<div class="srow">
+<div class="scard" onclick="app.rrep('monthly')"><div class="si">📊</div><div class="sl">По месяцам</div></div>
+<div class="scard" onclick="app.rrep('weekly')"><div class="si">📈</div><div class="sl">По неделям</div></div>
+<div class="scard" onclick="app.rrep('accounts')"><div class="si">💳</div><div class="sl">По счетам</div></div>
+<div class="scard" onclick="app.rrep('top')"><div class="si">🏆</div><div class="sl">Топ трат</div></div>
+<div class="scard" onclick="app.rrep('capital')"><div class="si">💎</div><div class="sl">Капитал</div></div>
+</div>
+<div id="rcontent"></div>
+</div>
+<div id="s-goals" class="sec" style="display:none">
+<div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Цели</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
+<div style="padding:16px"><button class="btn" onclick="app.showGoalModal()">+ Новая цель</button></div>
+<div id="gll"></div>
+</div>
+
+<div id="s-settings" class="sec" style="display:none">
+<div class="topbar"><div class="tbl"><div class="lgi">💰</div><div class="lgt">Настройки</div></div><button class="sbtn" onclick="app.nav('dash')">✕</button></div>
+<div class="card" style="text-align:center;padding:24px"><div style="font-size:52px;margin-bottom:6px">💰</div><div style="font-size:22px;font-weight:800">
+FinTrack</div><div style="font-size:13px;color:#64748b;margin-top:4px">v3.6</div></div>
+<div class="card"><div class="ct">☁️ Синхронизация</div><div style="font-size:14px;color:#64748b;margin-bottom:14px">Данные сохраняются в облаке автоматически.</div>
+<div id="sync-st" style="font-size:13px;margin-bottom:12px;padding:10px;background:#f0fdf4;border-radius:10px;color:#059669;font-weight:600">✅ Синхронизация активна</div>
+<div class="fg"><label class="fl">Ключ синхронизации</label><input class="fi" id="sk" placeholder="Вставьте ключ..." style="font-size:13px"></div>
+<div style="display:flex;gap:8px;margin-bottom:10px">
+<button class="btn bts" onclick="app.enableSync()">🔗 Подключить</button>
+<button class="btn bts btg" onclick="app.createNewSync()">✨ Новый ключ</button></div>
+<div style="display:flex;gap:8px">
+<button class="btn bts btg" onclick="app.restoreCloud()">⬇️ Восстановить</button>
+<button class="btn bts" onclick="app.copySyncKey()">📋 Копировать ключ</button></div></div>
+<div class="card"><div class="ct">💾 Резервная копия</div><div style="font-size:14px;color:#64748b;margin-bottom:14px">Сохраните файл на устройстве для надёжности.</div>
+<button class="btn btg" style="margin-bottom:8px" onclick="app.exportData()">📤 Экспорт JSON</button><label class="btn btg" style="display:block;text-align:center;cursor:pointer">
+📥 Импорт JSON<input type="file" id="ij" accept=".json" style="display:none" onchange="app.importJsonData(this)"></label></div>
+<div class="card"><div class="ct" style="color:#ef4444">⚠️ Опасная зона</div><button class="btn btr" onclick="app.resetData()">🗑️ Удалить все данные</button></div>
+</div>
+<button class="fab hid" id="fb" onclick="app.onFab()">+</button>
+<div class="bn" id="nb">
+<button class="ni a" data-p="dash" onclick="app.nav('dash')">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<rect x="3" y="3" width="7" height="7" rx="2"/>
+<rect x="14" y="3" width="7" height="7" rx="2"/>
+<rect x="14" y="14" width="7" height="7" rx="2"/>
+<rect x="3" y="14" width="7" height="7" rx="2"/>
+</svg>Главная</button>
+<button class="ni" data-p="accounts" onclick="app.nav('accounts')">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<rect x="2" y="5" width="20" height="14" rx="2"/>
+<line x1="2" y1="10" x2="22" y2="10"/>
+</svg>Счета</button>
+<button class="ni" data-p="tx" onclick="app.nav('tx')">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+<polyline points="14 2 14 8 20 8"/>
+<line x1="16" y1="13" x2="8" y2="13"/>
+<line x1="16" y1="17" x2="8" y2="17"/>
+</svg>Операции</button>
+<button class="ni" data-p="reports" onclick="app.nav('reports')">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+<polyline points="14 2 14 8 20 8"/>
+<line x1="16" y1="13" x2="8" y2="13"/>
+<line x1="16" y1="17" x2="8" y2="17"/>
+<polyline points="10 9 9 9 8 9"/>
+</svg>Отчёты</button>
+<button class="ni" data-p="settings" onclick="app.nav('settings')">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<circle cx="12" cy="12" r="3"/>
+<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06
+a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06
+a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21
+a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4
+a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0
+2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15
+a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09
+A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06
+a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06
+A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3
+a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51
+1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0
+2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.42 9
+a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09
+a1.65 1.65 0 0 0-1.51 1z"/>
+</svg>Ещё</button>
+</div>
+</div>
+</div>
+
+<script>
+const DB={
+  API:'https://api.jsonbin.io/v3/b',
+  KEY:'$2a$10$8XvJkP1Qm4QnYw5XvJkP1O', // read-only public key
+  MASTER:'$2a$10$MASTER_KEY_HERE_PRIVATE', // write key (generated per-user)
+  load(){try{return JSON.parse(localStorage.getItem('ft_v3')||'{}')}catch(e){return{}}},
+  save(d){d.lastMod=Date.now();localStorage.setItem('ft_v3',JSON.stringify(d));this._sync(d)},
+  get(k,def){const d=this.load();return d[k]!==undefined?d[k]:def},
+  set(k,v){const d=this.load();d[k]=v;this.save(d)},
+  _sync(d){var key=this._getKey();if(!key)return;this._syncNow(d,key)},
+  _syncNow(d,key){try{var data=JSON.stringify(d);fetch(this.API+'/'+key,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':key},body:data}).catch(function(){})}catch(e){}},
+  _getKey(){return localStorage.getItem('ft_sync_key')},
+  _setKey(k){localStorage.setItem('ft_sync_key',k)},
+  createBin(cb){var d=this.load();var that=this;fetch(this.API,{method:'POST',headers:{'Content-Type':'application/json','X-Master-Key':this.MASTER,'X-Bin-Private':false},body:JSON.stringify(d)}).then(function(r){return r.json()}).then(function(j){if(j.metadata&&j.metadata.id){that._setKey(j.metadata.id);localStorage.setItem('ft_sync_key',j.metadata.id);if(cb)cb(j.metadata.id)}}).catch(function(){if(cb)cb(null)})},
+  restoreFromCloud(cb){var key=this._getKey();if(!key){if(cb)cb(false);return}var that=this;fetch(this.API+'/'+key+'/latest',{headers:{'X-Master-Key':key}}).then(function(r){return r.json()}).then(function(j){if(j.record){var local=that.load();var cloud=j.record;if(!local.lastMod||cloud.lastMod>local.lastMod){localStorage.setItem('ft_v3',JSON.stringify(cloud));if(cb)cb(true)}else{if(cb)cb(false)}}else{if(cb)cb(false)}}).catch(function(){if(cb)cb(false)})},
+  getSyncKey(){return this._getKey()||''},
+  setSyncKey(k){this._setKey(k);},
+  exportFile(){var d=this.load();var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='fintrack-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(u);}
+};
+const CAT=[
+  {id:1,n:'Продукты',i:'🛒',c:'#10B981',b:35000,t:'e'},
+  {id:2,n:'Транспорт',i:'🚌',c:'#3B82F6',b:5000,t:'e'},
+  {id:3,n:'Еда вне дома',i:'🍽️',c:'#F59E0B',b:8000,t:'e'},
+  {id:4,n:'Подписки',i:'📅',c:'#EF4444',b:3000,t:'e'},
+  {id:5,n:'Развлечения',i:'🎮',c:'#8B5CF6',b:5000,t:'e'},
+  {id:6,n:'Здоровье',i:'❤️',c:'#EC4899',b:4000,t:'e'},
+  {id:7,n:'Одежда',i:'👕',c:'#06B6D4',b:10000,t:'e'},
+  {id:8,n:'Жильё',i:'🏠',c:'#F97316',b:0,t:'e'},
+  {id:9,n:'Коммунальные',i:'⚡',c:'#EAB308',b:5000,t:'e'},
+  {id:10,n:'Интернет',i:'📶',c:'#6366F1',b:800,t:'e'},
+  {id:11,n:'Образование',i:'🎓',c:'#14B8A6',b:0,t:'e'},
+  {id:12,n:'Подарки',i:'🎁',c:'#D946EF',b:3000,t:'e'},
+  {id:13,n:'Покупки',i:'🛍️',c:'#FB7185',b:10000,t:'e'},
+  {id:14,n:'Путешествия',i:'✈️',c:'#0EA5E9',b:0,t:'e'},
+  {id:15,n:'Спорт',i:'🏋️',c:'#84CC16',b:3000,t:'e'},
+  {id:16,n:'Дети',i:'👶',c:'#A855F7',b:0,t:'e'},
+  {id:17,n:'Питомцы',i:'🐱',c:'#F43F5E',b:2000,t:'e'},
+  {id:18,n:'Красота',i:'✨',c:'#E879F9',b:3000,t:'e'},
+  {id:19,n:'Ремонт',i:'🔧',c:'#78716C',b:0,t:'e'},
+  {id:20,n:'Налоги',i:'📄',c:'#64748B',b:0,t:'e'},
+  {id:21,n:'Бизнес',i:'💼',c:'#0D9488',b:0,t:'e'},
+  {id:22,n:'Переводы',i:'↔️',c:'#6B7280',b:0,t:'e'},
+  {id:101,n:'Зарплата',i:'💵',c:'#10B981',b:0,t:'i'},
+  {id:102,n:'Фриланс',i:'💻',c:'#3B82F6',b:0,t:'i'},
+  {id:103,n:'Инвестиции',i:'📈',c:'#8B5CF6',b:0,t:'i'},
+  {id:104,n:'Подарки',i:'🎁',c:'#EC4899',b:0,t:'i'},
+  {id:105,n:'Аренда',i:'🏠',c:'#F59E0B',b:0,t:'i'},
+  {id:106,n:'Кэшбэк',i:'🔄',c:'#06B6D4',b:0,t:'i'},
+  {id:107,n:'Дивиденды',i:'🥧',c:'#F97316',b:0,t:'i'},
+  {id:108,n:'Продажи',i:'🏷️',c:'#14B8A6',b:0,t:'i'}
+];
+function initD(){
+  if(!DB.get('c'))DB.set('c',JSON.parse(JSON.stringify(CAT)));
+  if(!DB.get('a'))DB.set('a',[]);
+  if(!DB.get('x'))DB.set('x',[]);
+  if(!DB.get('d'))DB.set('d',[]);
+  if(!DB.get('p'))DB.set('p',[]);
+  if(!DB.get('g'))DB.set('g',[]);
+  if(!DB.get('qs')){var ec=(DB.get('c')||[]).filter(function(c){return(c.t||'e')==='e'});DB.set('qs',ec.slice(0,8).map(function(z){return z.id}))}
+}
+
+const app={
+  pg:'dash',ch:{},
+  f(n){return (+n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' ₽'},
+  td(){return new Date().toISOString().split('T')[0]},
+  uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2)},
+  ct(t){return(DB.get('c')||[]).filter(c=>(c.t||'e')===t)},
+  cm(){return this.td().slice(0,7)},
+
+  go(){
+    document.getElementById('ld').classList.add('hid');
+    document.getElementById('ma').classList.remove('hid');
+    document.getElementById('nb').classList.remove('hid');
+    document.getElementById('fb').classList.remove('hid');
+    this.nav('dash');
+  },
+
+  nav(p){
+    this.pg=p;
+    var secs=['dash','accounts','tx','budget','deposits','planned',
+    'analytics','reports','settings','goals'];
+    secs.forEach(function(s){
+      var el=document.getElementById('s-'+s);
+      if(el)el.style.display='none';
+    });
+    document.getElementById('s-'+p).style.display='block';
+    var nis=document.querySelectorAll('.ni');
+    for(var i=0;i<nis.length;i++){nis[i].classList.remove('a')}
+    var b=document.querySelector('.ni[data-p="'+p+'"]');
+    if(b)b.classList.add('a');
+    var f=document.getElementById('fb');
+    var showFab=(p==='dash'||p==='tx'||p==='accounts'||
+    p==='deposits'||p==='planned'||p==='goals');
+    f.style.display=showFab?'flex':'none';
+    if(p==='analytics')setTimeout(function(){app.ra()},100);
+    if(p==='reports')setTimeout(function(){app.rrep('monthly')},100);
+    if(p==='dash')this.rd();
+    if(p==='accounts')this.rac();
+    if(p==='tx')this.rtx();
+    if(p==='budget')this.rb();
+    if(p==='deposits')this.rdps();
+    if(p==='planned')this.rpl();
+    if(p==='goals')this.rgl();
+    if(p==='settings')this.rsk();
+    window.scrollTo(0,0);
+  },
+
+  onFab(){
+    if(this.pg==='accounts')this.showAccountModal();
+    else if(this.pg==='tx'||this.pg==='dash')this.showTxModal();
+    else if(this.pg==='deposits')this.showDepositModal();
+    else if(this.pg==='planned')this.showPlannedModal();
+    else if(this.pg==='goals')this.showGoalModal();
+  },
+
+  rd(){
+    var a=DB.get('a')||[],x=DB.get('x')||[],
+    p=DB.get('p')||[],c=DB.get('c')||[];
+    var m=this.td().slice(0,7);
+    var ic=a.filter(function(z){return!z.ex});
+    var tb=ic.reduce(function(s,z){return s+(+z.b||0)},0);
+    document.getElementById('db').textContent=this.f(tb);
+    document.getElementById('da').textContent=
+    a.length+' счетов · '+ic.length+' в учёте';
+    var mx=x.filter(function(z){return z.d.slice(0,7)===m});
+    var ex=mx.filter(function(z){return z.t==='e'})
+    .reduce(function(s,z){return s+z.am},0);
+    var inc=mx.filter(function(z){return z.t==='i'})
+    .reduce(function(s,z){return s+z.am},0);
+    document.getElementById('de').textContent=this.f(ex);
+    document.getElementById('di').textContent=this.f(inc);
+    var pm=p.reduce(function(s,z){
+      var v=+z.am||0;
+      return s+(z.f==='m'?v:z.f==='w'?v*4:z.f==='y'?v/12:v);
+    },0);
+    document.getElementById('dp').textContent=this.f(pm);
+    var ec=c.filter(function(z){return(z.t||'e')==='e'});
+    var tbt=ec.reduce(function(s,z){return s+(+z.b||0)},0);
+    var bp=tbt?Math.min(100,Math.round(ex/tbt*100)):0;
+    document.getElementById('dbg').textContent=bp+'%';
+    var sb={};
+    mx.filter(function(z){return z.t==='e'})
+    .forEach(function(z){sb[z.cid]=(sb[z.cid]||0)+z.am});
+    this.rqs();
+    var va=a.filter(function(z){return!z.h}).slice(0,4);
+    document.getElementById('dal').innerHTML=
+    va.map(function(z){
+      return '<div class="li">'+
+      '<div class="lx" style="background:'+z.c+'18">'+z.i+'</div>'+
+      '<div class="ln"><div class="lt">'+z.n+'</div></div>'+
+      '<div class="la">'+app.f(z.b||0)+'</div></div>';
+    }).join('')||
+    '<div class="em"><div class="ei">💳</div>'+
+    '<div class="et">Нет счетов</div></div>';
+    var dp=(DB.get('d')||[]).slice(0,3);
+    document.getElementById('ddl').innerHTML=
+    dp.map(function(z){
+      var dl=Math.ceil((new Date(z.en)-new Date())/864e5);
+      return '<div class="li">'+
+      '<div class="lx" style="background:#fef3c7">🐷</div>'+
+      '<div class="ln"><div class="lt">'+z.n+'</div>'+
+      '<div class="ls">'+(dl>0?dl+' дн.':'Завершён')+'</div></div>'+
+      '<div class="la">'+app.f(z.am)+'</div></div>';
+    }).join('')||
+    '<div class="em"><div class="ei">🐷</div>'+
+    '<div class="et">Нет вкладов</div></div>';
+    var g=DB.get('g')||[];
+    document.getElementById('dgl').innerHTML=
+    g.slice(0,3).map(function(z){
+      var pct=z.tg?Math.min(100,Math.round((z.cv||0)/z.tg*100)):0;
+      return '<div class="li">'+
+      '<div class="lx" style="background:#dbeafe">🎯</div>'+
+      '<div class="ln"><div class="lt">'+z.n+'</div>'+
+      '<div class="ls">'+pct+'% · '+app.f(z.cv||0)+' из '+app.f(z.tg)+'</div></div>'+
+      '<div class="la">'+app.f(z.tg-z.cv)+'</div></div>';
+    }).join('')||
+    '<div class="em"><div class="ei">🎯</div>'+
+    '<div class="et">Нет целей</div></div>';
+    this.rc6();
+  },
+
+  rqs(){
+    var qs=DB.get('qs');
+    if(!qs){var ec=this.ct('e');qs=ec.slice(0,8).map(function(z){return z.id});DB.set('qs',qs);}
+    var all=DB.get('c')||[];
+    var el=document.getElementById('dcg');
+    if(!qs.length){el.innerHTML='<div class="em" style="padding:20px"><div class="ei">⚡</div><div class="et">Нажмите ⚙️ чтобы настроить</div></div>';return}
+    var m=this.cm();
+    el.innerHTML=qs.map(function(qid){
+      var cat=all.find(function(z){return z.id===qid});
+      if(!cat)return '';
+      var x=DB.get('x')||[];
+      var spent=x.filter(function(z){return z.d&&z.d.startsWith(m)&&z.t==='e'&&z.cid===qid}).reduce(function(s,z){return s+z.am},0);
+      return '<button class="qb" onclick="app.showTxModal('+qid+')" ontouchstart="app._lp=setTimeout(function(){app.showCatTx('+qid+')},600)" ontouchend="clearTimeout(app._lp)" ontouchmove="clearTimeout(app._lp)">'+
+      '<div style="font-size:22px;margin-bottom:4px">'+cat.i+'</div>'+
+      '<div style="font-size:12px;color:#64748b">'+cat.n+'</div>'+
+      '<div style="font-size:11px;color:#94a3b8;margin-top:2px">'+app.f(spent)+'</div>'+
+      '</button>';
+    }).join('');
+  },
+
+  sqs(){
+    var all=(DB.get('c')||[]).filter(function(z){return z.t==='e'});
+    var qs=DB.get('qs')||[];
+    var h='<div style="font-size:13px;color:#64748b;margin-bottom:12px">Выберите категории для быстрого доступа (до 12):</div>';
+    h+='<div id="qs-list">'+all.map(function(z){
+      var on=qs.indexOf(z.id)>=0;
+      return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer" onclick="var cb=document.getElementById(\'qs-'+z.id+'\');cb.checked=!cb.checked">'+
+      '<input type="checkbox" id="qs-'+z.id+'" data-id="'+z.id+'" '+(on?'checked':'')+' style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" onclick="event.stopPropagation()">'+
+      '<span style="font-size:20px">'+z.i+'</span><span style="font-size:15px;flex:1">'+z.n+'</span></div>';
+    }).join('')+'</div>';
+    h+='<div class="fg" style="margin-top:16px;padding:12px;background:#f8fafc;border-radius:10px">'+
+    '<label style="font-size:13px;color:#64748b;margin-bottom:8px;display:block">✨ Добавить свою категорию:</label>'+
+    '<div style="display:flex;gap:8px">'+
+    '<input type="text" id="qs-new-name" placeholder="Название" class="fi" style="flex:1">'+
+    '<input type="text" id="qs-new-icon" placeholder="Иконка" class="fi" style="width:70px;text-align:center" value="🏷️">'+
+    '<button class="btn" style="width:auto;padding:10px 16px;font-size:14px" onclick="app.qsn()">➕</button></div></div>';
+    h+='<button class="btn" style="margin-top:16px" onclick="app.qss()">💾 Сохранить</button>';
+    this.md('⚡ Быстрые траты',h);
+  },
+
+  qsn(){
+    var nm=document.getElementById('qs-new-name').value.trim();
+    var ic=document.getElementById('qs-new-icon').value.trim()||'🏷️';
+    if(!nm){alert('Введите название');return}
+    var c=DB.get('c')||[];
+    var id=Date.now();
+    c.push({id:id,n:nm,i:ic,t:'e',b:0});
+    DB.set('c',c);
+    var qs=DB.get('qs')||[];
+    if(qs.indexOf(id)<0)qs.push(id);
+    DB.set('qs',qs);
+    this.sqs();
+    this.rqs();
+  },
+
+  qss(){
+    var all=(DB.get('c')||[]).filter(function(z){return z.t==='e'});
+    var qs=[];
+    all.forEach(function(z){
+      var el=document.getElementById('qs-'+z.id);
+      if(el&&el.checked)qs.push(z.id);
+    });
+    if(qs.length>12){alert('Максимум 12 категорий');return}
+    DB.set('qs',qs);
+    this.cl();this.rqs();
+  },
+
+  rc6(){
+    var el=document.getElementById('c6');if(!el)return;
+    try{
+      var x=DB.get('x')||[];
+      var ms=[];
+      for(var i=5;i>=0;i--){
+        var d=new Date();d.setMonth(d.getMonth()-i);
+        ms.push(d.toISOString().slice(0,7));
+      }
+      var ed=ms.map(function(m){
+        return x.filter(function(z){return z.t==='e'&&z.d.slice(0,7)===m})
+        .reduce(function(s,z){return s+z.am},0);
+      });
+      var id=ms.map(function(m){
+        return x.filter(function(z){return z.t==='i'&&z.d.slice(0,7)===m})
+        .reduce(function(s,z){return s+z.am},0);
+      });
+      if(this.ch.m6)this.ch.m6.destroy();
+      var lbs=ms.map(function(m){
+        var p=m.split('-');return p[1]+'.'+p[0].slice(2);
+      });
+      this.ch.m6=new Chart(el,{
+        type:'bar',
+        data:{
+          labels:lbs,
+          datasets:[
+            {label:'Расходы',data:ed,backgroundColor:'#ef4444',borderRadius:6},
+            {label:'Доходы',data:id,backgroundColor:'#10b981',borderRadius:6}
+          ]
+        },
+        options:{
+          responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:false}},
+          scales:{
+            y:{beginAtZero:true,grid:{display:false}},
+            x:{grid:{display:false}}
+          }
+        }
+      });
+    }catch(e){console.log('Chart error:',e)}
+  },
+
+  rac(){
+    var a=DB.get('a')||[];
+    var el=document.getElementById('al');
+    if(!a.length){
+      el.innerHTML='<div class="em"><div class="ei">💳</div>'+
+      '<div class="et">Нет счетов</div>'+
+      '<div class="es">Добавьте первый счёт</div></div>';
+      return;
+    }
+    el.innerHTML=a.map(function(z){
+      var tgs=[];
+      if(z.main)tgs.push('<span class="tg" style="background:#dbeafe;color:#1d4ed8">★ главный</span>');
+      if(z.h)tgs.push('<span class="tg">скрыт</span>');
+      if(z.ex)tgs.push('<span class="tg" style="background:#fef3c7;color:#d97706">вне учёта</span>');
+      return '<div class="card">'+
+      '<div style="display:flex;align-items:center;gap:12px">'+
+      '<div class="lx" style="background:'+z.c+'18;font-size:20px">'+z.i+'</div>'+
+      '<div class="ln"><div class="lt">'+z.n+' '+tgs.join(' ')+'</div></div>'+
+      '<div class="la">'+app.f(z.b||0)+'</div></div>'+
+      '<div style="display:flex;gap:8px;margin-top:12px">'+
+      `<button class="btn bts btg" onclick="app.showAccountModal('${z.id}')">✏️</button>`+
+      `<button class="btn bts btr" onclick="app.delAccount('${z.id}')">🗑️</button></div></div>`;
+    }).join('');
+  },
+
+  showAccountModal(id){
+    var a=id?(DB.get('a')||[]).find(function(z){return z.id===id}):null;
+    var ic=['💵','💳','🏦','📱','🪙','🏠','📈','💼','🚗','✈️'];
+    var cs=['#4F46E5','#059669','#DC2626','#D97706','#7C3AED','#DB2777',
+    '#0891B2','#65A30D','#64748B','#10B981'];
+    var t=(a?'Редактировать':'Новый')+' счёт';
+    var h='<div class="fg"><label class="fl">Название</label>'+
+    '<input class="fi" id="an" value="'+(a?a.n:'')+'" '+
+    'placeholder="Например: Тинькофф Black"></div>';
+    h+='<div class="fg"><label class="fl">Баланс</label>'+
+    '<input class="fi" id="ab" type="number" value="'+(a?a.b:'')+'" '+
+    'placeholder="0"></div>';
+    h+='<div class="fg"><label class="fl">Иконка</label>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
+    ic.map(function(i){
+      var sel=a&&a.i===i?'#10b981':'transparent';
+      return `<button onclick="document.getElementById('aiv').value='${i}';
+      document.querySelectorAll('.ib').forEach(function(b){
+      b.style.border='2px solid transparent'});
+      this.style.border='2px solid #10b981'" 
+      class="ib" style="width:44px;height:44px;font-size:22px;
+      border-radius:12px;border:2px solid ${sel};
+      background:#f1f5f9;cursor:pointer">${i}</button>`;
+    }).join('')+'</div>'+
+    '<input type="hidden" id="aiv" value="'+(a?a.i:'💵')+'"></div>';
+    h+='<div class="fg"><label class="fl">Цвет</label>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
+    cs.map(function(c){
+      var bo=a&&a.c===c?'3px solid #333':'none';
+      return `<button onclick="document.getElementById('acv').value='${c}';
+      document.querySelectorAll('.cb').forEach(function(b){
+      b.style.transform='scale(1)'});
+      this.style.transform='scale(1.25)'" class="cb" 
+      style="width:32px;height:32px;border-radius:50%;background:${c};
+      border:${bo};cursor:pointer;transition:.2s"></button>`;
+    }).join('')+'</div>'+
+    '<input type="hidden" id="acv" value="'+(a?a.c:'#4F46E5')+'"></div>';
+    h+='<div class="trx"><span style="font-weight:600">'+
+    'Скрыть с главной</span><div class="tsw '+(a&&a.h?'on':'')+'" '+
+    `onclick="this.classList.toggle('on')" id="ah"></div></div>`;
+    h+='<div class="trx"><span style="font-weight:600">'+
+    'Не учитывать в балансе</span><div class="tsw '+(a&&a.ex?'on':'')+'" '+
+    `onclick="this.classList.toggle('on')" id="ae"></div></div>`;
+    h+='<div class="trx"><span style="font-weight:600">'+
+    '★ Главный счёт</span><div class="tsw '+(a&&a.main?'on':'')+'" '+
+    `onclick="this.classList.toggle('on')" id="amain"></div></div>`;
+    h+=`<button class="btn" style="margin-top:14px" 
+    onclick="app.saveAccount('${id||''}')">
+    ${a?'💾 Сохранить':'➕ Создать'}</button>`;
+    this.md(t,h);
+  },
+
+  saveAccount(id){
+    var a=DB.get('a')||[];
+    var isMain=document.getElementById('amain').classList.contains('on');
+    var d={
+      id:id||this.uid(),
+      n:document.getElementById('an').value,
+      b:+document.getElementById('ab').value||0,
+      i:document.getElementById('aiv').value,
+      c:document.getElementById('acv').value,
+      h:document.getElementById('ah').classList.contains('on'),
+      ex:document.getElementById('ae').classList.contains('on'),
+      main:isMain
+    };
+    if(!d.n){alert('Введите название');return}
+    if(isMain){a.forEach(function(z){z.main=false})}
+    if(id){var i=a.findIndex(function(z){return z.id===id});a[i]=d}
+    else a.push(d);
+    DB.set('a',a);this.cl();this.rac();this.rd();
+  },
+
+  delAccount(id){
+    if(confirm('Удалить счёт?')){
+      DB.set('a',(DB.get('a')||[]).filter(function(z){return z.id!==id}));
+      this.rac();this.rd();
+    }
+  },
+
+  showTransferModal(){
+    var a=DB.get('a')||[];
+    if(a.length<2){alert('Нужно минимум 2 счёта');return}
+    var h='<div class="fg"><label class="fl">Сумма, ₽</label>'+
+    '<input class="fi" id="tfm" type="number" placeholder="0" autofocus></div>';
+    h+='<div class="fg"><label class="fl">Счёт списания</label>'+
+    '<select class="fi" id="tff">'+a.map(function(z){
+      return '<option value="'+z.id+'">'+z.i+' '+z.n+' ('+
+      app.f(z.b||0)+')</option>';
+    }).join('')+'</select></div>';
+    h+='<div class="fg"><label class="fl">Счёт зачисления</label>'+
+    '<select class="fi" id="tft">'+a.map(function(z){
+      return '<option value="'+z.id+'">'+z.i+' '+z.n+' ('+
+      app.f(z.b||0)+')</option>';
+    }).join('')+'</select></div>';
+    h+='<div class="fg"><label class="fl">Дата</label>'+
+    '<input class="fi" id="tfd" type="date" value="'+this.td()+'"></div>';
+    h+='<button class="btn" onclick="app.saveTransfer()">'+
+    '↔️ Перевести</button>';
+    this.md('Перевод между счетами',h);
+  },
+
+  saveTransfer(){
+    var am=+document.getElementById('tfm').value;
+    var ff=document.getElementById('tff').value;
+    var ft=document.getElementById('tft').value;
+    var dt=document.getElementById('tfd').value;
+    if(!am||am<=0){alert('Введите сумму');return}
+    if(ff===ft){alert('Выберите разные счета');return}
+    if(!dt){alert('Выберите дату');return}
+    var a=DB.get('a')||[];
+    var fa=a.find(function(z){return z.id===ff});
+    var ta=a.find(function(z){return z.id===ft});
+    if(!fa||!ta){alert('Счёт не найден');return}
+    if((fa.b||0)<am){alert('Недостаточно средств на счёте '+
+    fa.n+' ('+this.f(fa.b||0)+')');return}
+    fa.b=(fa.b||0)-am;
+    ta.b=(ta.b||0)+am;
+    DB.set('a',a);
+    var x=DB.get('x')||[];
+    x.push({
+      id:this.uid(),am:am,ac:ff,ac2:ft,d:dt,t:'transfer',ds:'Перевод: '+
+      fa.n+' → '+ta.n
+    });
+    DB.set('x',x);
+    this.cl();this.rd();this.rtx();this.rac();
+  },
+
+  rtx(){
+    var x=(DB.get('x')||[]).filter(function(z){return z.d}).sort(function(a,b){return b.d.localeCompare(a.d)});
+    var c=DB.get('c')||[],a=DB.get('a')||[];
+    var me=document.getElementById('tm');
+    if(!me.options.length){
+      for(var i=0;i<12;i++){
+        var d=new Date();d.setMonth(d.getMonth()-i);
+        me.add(new Option(d.toLocaleString('ru',{month:'long',year:'numeric'}),
+        d.toISOString().slice(0,7)));
+      }
+      me.value=this.td().slice(0,7);
+    }
+    var sm=me.value||this.td().slice(0,7);
+    var st=document.getElementById('tt').value||'all';
+    var sq=(document.getElementById('tsx')||{}).value||'';
+    sq=sq.toLowerCase();
+    var f=x.filter(function(z){
+      if(!z.d||z.d.slice(0,7)!==sm)return false;
+      if(st!=='all'&&z.t!==st)return false;
+      if(sq){
+        var ct=c.find(function(q){return q.id===+z.cid})||{};
+        var aa=a.find(function(q){return q.id===z.ac})||{};
+        var bb=z.ac2?(a.find(function(q){return q.id===z.ac2})||{}):{};
+        var txt=(z.ds||'')+' '+(ct.n||'')+' '+(aa.n||'')+' '+(bb.n||'');
+        if(txt.toLowerCase().indexOf(sq)===-1)return false;
+      }
+      return true;
+    });
+    var el=document.getElementById('tl');
+    if(!f.length){
+      el.innerHTML='<div class="em"><div class="ei">📝</div>'+
+      '<div class="et">Нет операций</div></div>';
+      return;
+    }
+    var g={};
+    f.forEach(function(z){g[z.d]=g[z.d]||[];g[z.d].push(z)});
+    el.innerHTML=Object.keys(g).sort(function(a,b){
+      return b.localeCompare(a);
+    }).map(function(dt){
+      var d=new Date(dt+'T12:00:00');
+      var hd='<div style="margin:0 0 10px 0">'+
+      '<div style="font-size:12px;color:#64748b;margin:10px 18px 6px;'+
+      'font-weight:600">'+
+      d.toLocaleDateString('ru',{weekday:'short',day:'numeric',month:'long'})+
+      '</div>';
+      hd+=g[dt].map(function(t){
+        var ct=c.find(function(q){return q.id===+t.cid})||{};
+        var ac=a.find(function(q){return q.id===t.ac})||{};
+        var ac2=t.ac2?(a.find(function(q){return q.id===t.ac2})||{}):null;
+        var color,sign,info;
+        if(t.t==='transfer'){
+          color='#3b82f6';sign='↔️';
+          info=(ac.n||'')+' → '+(ac2?ac2.n:'');
+        }else{
+          color=t.t==='e'?'#ef4444':'#10b981';
+          sign=t.t==='e'?'-':'+';
+          info=(ac.n||'')+(t.ds?' · '+t.ds:'');
+        }
+        return '<div class="card" style="margin:4px 18px;padding:12px;'+
+        'display:flex;align-items:center;gap:12px">'+
+        '<div class="lx" style="background:'+(ct.c||'#3b82f6')+'18;'+
+        'font-size:18px">'+(t.t==='transfer'?'↔️':(ct.i||'📦'))+'</div>'+
+        '<div class="ln" style="flex:1"><div class="lt">'+
+        (t.t==='transfer'?'Перевод':(ct.n||'Без категории'))+'</div>'+
+        '<div class="ls">'+info+'</div></div>'+
+        '<div class="la" style="color:'+color+'">'+sign+app.f(t.am)+'</div>'+
+        `<button onclick="app.showTxEdit('${t.id}')" style="background:none;border:none;font-size:16px;color:#94a3b8;cursor:pointer;padding:4px">✏️</button>`+
+        `<button onclick="app.delTx('${t.id}')" style="background:none;border:none;font-size:16px;color:#94a3b8;cursor:pointer;padding:4px">🗑️</button></div>`;
+    }).join('');
+    return hd;
+  }).join('');
+  },
+
+  showTxModal(cid){
+    var c=this.ct('e');var a=DB.get('a')||[];
+    if(!a.length){alert('Сначала создайте счёт');return}
+    var main=a.find(function(z){return z.main});
+    var h='<div class="fg"><label class="fl">Тип</label>'+
+    '<select class="fi" id="ttx" onchange="app.txc()">'+
+    '<option value="e">📉 Расход</option><option value="i">📈 Доход</option>'+
+    '</select></div>';
+    h+='<div class="fg"><label class="fl">Сумма, ₽</label>'+
+    '<input class="fi" id="tam" type="number" placeholder="0" autofocus></div>';
+    h+='<div class="fg"><label class="fl">Счёт</label>'+
+    '<select class="fi" id="tac">'+a.map(function(z){
+      var s=main&&z.id===main.id?' selected':'';
+      return '<option value="'+z.id+'"'+s+'>'+z.i+' '+z.n+'</option>';
+    }).join('')+'</select></div>
